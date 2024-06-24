@@ -1,0 +1,16 @@
+# File verified
+
+# Ignore environmental file
+.env
+
+# Ignore Composer's vendor directory
+vendor/
+
+# Ignore any logs or backups
+*.log
+
+# Ignore IDE or editor specific files
+.vscode/
+
+# Ignore macOS .DS_Store files
+.DS_Store

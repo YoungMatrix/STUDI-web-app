@@ -1,0 +1,22 @@
+{
+    "name": "soignemoi/studi",
+    "version": "1.0.0",
+    "description": "This is the repository for summer 2024 ECF STUDI project: web application.",
+    "require": {
+        "php": ">=8.2.4",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Configuration\\": "app/configuration/",
+            "Test\\": "app/tests/",
+            "Classes\\": "app/utilities/classes/",
+            "Functions\\": "app/utilities/functions/"
+        }
+    },
+    "extra": {
+        "dotenv": {
+            "file": "app/.env"
+        }
+    }
+}

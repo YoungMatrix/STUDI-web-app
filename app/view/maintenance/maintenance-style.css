@@ -1,0 +1,29 @@
+/* File verified */
+
+/* Styles for the body element */
+body {
+    font-family: Arial, sans-serif;
+    /* Set the font family */
+    margin: 0;
+    /* Remove default margins */
+    padding: 0;
+    /* Remove default padding */
+    background-color: #f0f0f0;
+    /* Set background color */
+    text-align: center;
+    /* Center align text */
+    padding-top: 50px;
+    /* Add padding to the top */
+}
+
+/* Styles for h1 elements */
+h1 {
+    color: #333;
+    /* Set text color */
+}
+
+/* Styles for p elements */
+p {
+    color: #666;
+    /* Set text color */
+}
