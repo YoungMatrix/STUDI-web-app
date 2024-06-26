@@ -11,7 +11,8 @@
             "Configuration\\": "app/configuration/",
             "Test\\": "app/tests/",
             "Classes\\": "app/utilities/classes/",
-            "Functions\\": "app/utilities/functions/"
+            "PHPFunctions\\": "app/utilities/functions/php",
+            "UserController\\": "app/controller/user/"
         }
     },
     "extra": {

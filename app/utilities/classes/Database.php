@@ -8,7 +8,6 @@ use PDO;
 use PDOException;
 
 /**
- * Class Database
  * Singleton class to manage database connections using PDO.
  */
 class Database

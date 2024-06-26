@@ -1,0 +1,306 @@
+/* File verified */
+
+/* Styles for the body */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Begin body header */
+/* Styles for the header section */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 5px 10px 5px;
+    margin: 0px 10px 0px 10px;
+}
+
+/* Styles for the logo within the header */
+header .logo {
+    font-size: 25px;
+    padding: 5px;
+}
+
+/* Styles for a specific span within the logo */
+header .logo span {
+    color: #FF0000;
+    font-style: italic;
+}
+
+/* Media queries for screens narrower than 600px */
+@media only screen and (max-width: 600px) {
+
+    /* Styles for utility links within the header */
+    header .utility a {
+        display: block;
+        white-space: nowrap;
+        overflow: auto;
+        text-decoration: none;
+        color: #999;
+        transition: 0.5s;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    /* Styles for signupForm */
+    header .signupForm {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        word-wrap: break-word;
+        width: 218px;
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin-top: 73px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+
+    /* Styles for loginForm */
+    header .loginForm {
+        display: none;
+        position: absolute;
+        word-wrap: break-word;
+        width: 218px;
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin-top: 35px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+
+    /* Styles for the reCAPTCHA element */
+    header .g-recaptcha {
+        transform: scale(0.72);
+        transform-origin: 0 0;
+        margin-bottom: -20px;
+    }
+}
+
+/* Media queries for screens wider than or equal to 600px */
+@media only screen and (min-width: 600px) {
+
+    /* Styles for utility links within the header */
+    header .utility {
+        display: flex;
+    }
+
+    header .utility a {
+        text-decoration: none;
+        color: #999;
+        transition: 0.5s;
+        border-radius: 10px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    /* Styles for signupForm and loginForm */
+    header .signupForm,
+    header .loginForm {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin-top: 45px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+}
+
+/* Styles for utility links on hover */
+header .utility a:hover {
+    background: #FF0000;
+    color: #fff;
+    font-style: italic;
+}
+
+/* Styles for form group within the header */
+header .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styles for labels and input fields */
+header label,
+input {
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* Styles for signupHelp */
+header .signupHelp {
+    font-size: 12px;
+    margin-top: 10px;
+    padding: 0 10px 0 10px;
+    color: red;
+    font-style: italic;
+    border: 1px solid grey;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/* Styles for signupError */
+header .signupError {
+    display: none;
+    font-size: 12px;
+    margin-top: 10px;
+    padding: 0 10px 0 10px;
+    color: red;
+    font-style: italic;
+    border: 1px solid grey;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/* Styles for loginError */
+header .loginError {
+    display: none;
+    font-size: 12px;
+    margin-top: 10px;
+    padding: 0 10px 0 10px;
+    color: red;
+    font-style: italic;
+    border: 1px solid grey;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/* End body header */
+
+/* Begin body home */
+/* Styles for the home section */
+.home {
+    background: url("../../assets/images/image1.jpg");
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 10px;
+}
+
+/* Styles for h1 within the home section */
+.home h1 {
+    font-size: 25px;
+    font-style: italic;
+}
+
+/* Styles for the sub-home section */
+.sub-home {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 25px 15px 300px 15px;
+    padding: 0px 20px 15px 20px;
+}
+
+/* Styles for a specific span within sub-home */
+.sub-home span {
+    color: #FF0000;
+    font-style: italic;
+}
+
+/* Styles for h2 within sub-home */
+.sub-home h2 {
+    font-style: italic;
+    font-size: 20px;
+}
+
+/* Styles for serviceList within sub-home */
+.sub-home .serviceList {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-row-gap: 10px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+/* Styles for serviceList div on hover within sub-home */
+.sub-home .serviceList div:hover {
+    color: #FF0000;
+    font-style: italic;
+}
+
+/* Styles for h3 within sub-home */
+.sub-home h3 {
+    font-style: italic;
+    font-size: 15px;
+}
+
+/* End body home */
+
+/* Begin body footer */
+/* Styles for the footer section */
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid grey;
+    margin: 30px 10px 0px 10px;
+}
+
+/* Styles for h1 within the footer section */
+.footer h1 {
+    margin-bottom: 20px;
+}
+
+/* Styles for contactdetails within the footer section */
+.footer .contactdetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styles for information within the footer section */
+.footer .information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Styles for ul within contactdetails */
+.footer .contactdetails ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+}
+
+/* Styles for a within contactdetails ul */
+.footer .contactdetails ul a {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 10px;
+}
+
+/* Styles for span within a in contactdetails ul */
+.footer .contactdetails ul a span {
+    font-weight: bold;
+}
+
+/* Styles for localisation */
+.footer .localisation {
+    width: 100%;
+}
+
+/* Styles for iframe within localisation */
+.footer .localisation iframe {
+    width: 100%;
+    height: 200px;
+    border: 0;
+}
+
+/* Styles for p within the footer */
+.footer p {
+    margin-top: 20px;
+    font-style: italic;
+    text-align: center;
+}
+
+/* End body footer */

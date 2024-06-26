@@ -1,10 +1,9 @@
 <?php
 
 // Namespace declaration
-namespace Functions;
+namespace PHPFunctions;
 
 /**
- * Class FileHandler
  * Contains utility functions for file handling, including checking if a file exists and displaying a maintenance view.
  */
 class FileHandler

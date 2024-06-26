@@ -9,7 +9,6 @@ namespace Test;
 use Classes\Database;
 
 /**
- * Class DatabaseTest
  * This class contains methods to test various functionalities of the Database class,
  * including testing the singleton behavior, committing transactions, and rolling back transactions.
  */

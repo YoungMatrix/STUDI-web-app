@@ -18,11 +18,10 @@ require_once $autoload;
 // Use statements to include necessary classes.
 use Dotenv\Dotenv;
 use Classes\Database;
-use Functions\FileHandler;
+use PHPFunctions\FileHandler;
 use PDOException;
 
 /**
- * Class Config
  * Central configuration class for the application.
  */
 class Config
@@ -42,9 +41,9 @@ class Config
      */
     public static function init()
     {
-        // Set the root path and maintenance view path.
+        // Set root and maintenance view paths.
         self::$rootPath = $_SERVER['DOCUMENT_ROOT'];
-        self::$maintenanceViewPath = self::$rootPath . '/app/view/maintenance/maintenanceView.php';
+        self::$maintenanceViewPath = self::$rootPath . '/app/view/maintenance/MaintenanceView.php';
 
         // Handle maintenance mode or initialize the database.
         self::handleMaintenance();
@@ -107,12 +106,42 @@ class Config
     }
 
     /**
-     * Static function to get the path to the maintenance style sheet.
+     * Retrieves the public reCAPTCHA key from environment variables.
      *
-     * @return string Path to the maintenance style CSS file.
+     * @return string Public reCAPTCHA key.
      */
-    public static function getMaintenanceStylePath()
+    public static function getPublicReCaptchaKey()
     {
-        return '/app/view/maintenance/maintenance-style.css';
+        // Set root path.
+        self::$rootPath = $_SERVER['DOCUMENT_ROOT'];
+
+        // Load environment variables.
+        $dotenv = Dotenv::createImmutable(self::$rootPath . '/app');
+        $dotenv->load();
+
+        // Retrieve database connection details from environment variables.
+        $publicReCaptchaKey = $_ENV['PUBLIC_RECAPTCHA_KEY'];
+
+        return $publicReCaptchaKey;
+    }
+
+    /**
+     * Retrieves the secret reCAPTCHA key from environment variables.
+     *
+     * @return string Secret reCAPTCHA key.
+     */
+    public static function getSecretReCaptchaKey()
+    {
+        // Set root path.
+        self::$rootPath = $_SERVER['DOCUMENT_ROOT'];
+
+        // Load environment variables.
+        $dotenv = Dotenv::createImmutable(self::$rootPath . '/app');
+        $dotenv->load();
+
+        // Retrieve database connection details from environment variables.
+        $secretReCaptchaKey = $_ENV['SECRET_RECAPTCHA_KEY'];
+
+        return $secretReCaptchaKey;
     }
 }
