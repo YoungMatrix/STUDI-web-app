@@ -3,26 +3,15 @@
 // File verified
 
 /**
- * Define the root path of the web server and the path to the autoload file.
+ * Define the path to the autoload file.
  * 
- * @var string $rootPath Root path of the web server.
  * @var string $autoload Path to the autoload file.
  */
-$rootPath = $_SERVER['DOCUMENT_ROOT'];
-$autoload = $rootPath . '/vendor/autoload.php';
+$autoload = $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $autoload;
 
 // Use statements to include necessary classes.
 use Configuration\Config;
-
-/**
- * Variables indicating error states for signup and login actions.
- *
- * @var bool $signupError Flag indicating whether there is an error during signup.
- * @var bool $loginError Flag indicating whether there is an error during login.
- */
-$signupError = false;
-$loginError = false;
 
 /**
  * Holds the path to the user controller file.
@@ -133,8 +122,8 @@ $appointment = '<h3 id=appointmentJS>Pour obtenir un séjour, veuillez-vous conn
  * @var string $publicError The JavaScript code snippet containing error messages for signup and login.
  */
 $publicError = '<script>
-        const signupError = "' . $signupError . '";
-        const loginError = "' . $loginError . '";
+        const signupError = "' . Config::getSignupError() . '";
+        const loginError = "' . Config::getLoginError() . '";
     </script>
 ';
 

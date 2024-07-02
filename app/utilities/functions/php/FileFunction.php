@@ -4,9 +4,11 @@
 namespace PHPFunctions;
 
 /**
+ * Class FileFunction
+ * 
  * Contains utility functions for file handling, including checking if a file exists and displaying a maintenance view.
  */
-class FileHandler
+class FileFunction
 {
     /**
      * Function to check if a file exists, otherwise display a maintenance view or a default message.

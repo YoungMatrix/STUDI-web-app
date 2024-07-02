@@ -9,6 +9,8 @@ namespace Test;
 use Classes\Database;
 
 /**
+ * Class DatabaseTest
+ * 
  * This class contains methods to test various functionalities of the Database class,
  * including testing the singleton behavior, committing transactions, and rolling back transactions.
  */
@@ -64,7 +66,7 @@ class DatabaseTest
         echo "<h1>testCommit:</h1>";
         // Check if tables exist, create if not (for testing purpose)
         $createTables = "
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS tests (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 age INT NOT NULL
@@ -78,8 +80,8 @@ class DatabaseTest
         $transactionStarted = $db->beginTransaction();
 
         if ($transactionStarted) {
-            // Insert into 'users' table
-            $insertQuery1 = "INSERT INTO users (name, age) VALUES (:name, :age)";
+            // Insert into 'tests' table
+            $insertQuery1 = "INSERT INTO tests (name, age) VALUES (:name, :age)";
             $params1 = ['name' => 'John Doe', 'age' => 30];
             $insertSuccess1 = $db->executeQueryParam($insertQuery1, $params1, false);
 
@@ -89,45 +91,29 @@ class DatabaseTest
                 if ($commit) {
                     echo "Transaction committed successfully.<br>";
 
-                    // Fetch and display users from 'users' table
-                    $selectQuery = "SELECT id, name, age FROM users";
-                    $users = $db->executeQuery($selectQuery);
+                    // Fetch and display tests from 'tests' table
+                    $selectQuery = "SELECT id, name, age FROM tests";
+                    $tests = $db->executeQuery($selectQuery);
 
-                    if ($users !== false && $users !== []) {
-                        echo "<h2>Users</h2>";
+                    if ($tests !== false && !empty($tests)) {
+                        echo "<h2>tests</h2>";
                         echo "<ul>";
-                        foreach ($users as $user) {
-                            echo "<li>ID: {$user['id']}, Name: {$user['name']}, Age: {$user['age']}</li>";
+                        foreach ($tests as $test) {
+                            echo "<li>ID: {$test['id']}, Name: {$test['name']}, Age: {$test['age']}</li>";
                         }
                         echo "</ul>";
                         echo "<h1>testCommit succeeded.</h1>";
                     } else {
-                        echo "Failed to fetch users.<br>";
+                        echo "Failed to fetch tests.<br>";
                     }
                 } else {
                     echo "Commit failed.<br>";
                 }
             } else {
                 // Rollback transaction if any insertion failed
-                $alterQuery = "ALTER TABLE users AUTO_INCREMENT = 1;";
-                $rollback = $db->rollback($alterQuery);
+                $rollback = $db->rollback();
                 if ($rollback) {
-                    echo "Transaction rolled back successfully and 'users' table altered.<br>";
-
-                    // Fetch and display users from 'users' table after rollback
-                    $selectQuery = "SELECT id, name, age FROM users";
-                    $users = $db->executeQuery($selectQuery);
-
-                    if ($users !== false && $users !== []) {
-                        echo "<h2>Users (after rollback)</h2>";
-                        echo "<ul>";
-                        foreach ($users as $user) {
-                            echo "<li>ID: {$user['id']}, Name: {$user['name']}, Age: {$user['age']}</li>";
-                        }
-                        echo "</ul>";
-                    } else {
-                        echo "Failed to fetch users after rollback.<br>";
-                    }
+                    echo "Rollback performed due to failed insertion.<br>";
                 } else {
                     echo "Rollback failed.<br>";
                 }
@@ -147,7 +133,7 @@ class DatabaseTest
         echo "<h1>testRollback:</h1>";
         // Check if tables exist, create if not (for testing purpose)
         $createTables = "
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS tests (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 age INT NOT NULL
@@ -160,13 +146,13 @@ class DatabaseTest
         $transactionStarted = $db->beginTransaction();
 
         if ($transactionStarted) {
-            // Insert into 'users' table
-            $insertQuery1 = "INSERT INTO users (name, age) VALUES (:name, :age)";
+            // Insert into 'tests' table
+            $insertQuery1 = "INSERT INTO tests (name, age) VALUES (:name, :age)";
             $params1 = ['name' => 'John Doe', 'age' => 30];
             $insertSuccess1 = $db->executeQueryParam($insertQuery1, $params1, false);
 
-            // Insert into 'users1' table (simulate failure)
-            $insertQuery2 = "INSERT INTO users1 (name, age) VALUES (:name, :age)";
+            // Insert into 'tests1' table (simulate failure)
+            $insertQuery2 = "INSERT INTO tests1 (name, age) VALUES (:name, :age)";
             $params2 = ['name' => 'Jane Doe', 'age' => 25];
             $insertSuccess2 = $db->executeQueryParam($insertQuery2, $params2, false);
 
@@ -176,47 +162,46 @@ class DatabaseTest
                 if ($commit) {
                     echo "Transaction committed successfully.<br>";
 
-                    // Fetch and display users from 'users' table
-                    $selectQuery = "SELECT id, name, age FROM users";
-                    $users = $db->executeQuery($selectQuery);
+                    // Fetch and display tests from 'tests' table
+                    $selectQuery = "SELECT id, name, age FROM tests";
+                    $tests = $db->executeQuery($selectQuery);
 
-                    if ($users !== false && $users !== []) {
-                        echo "<h2>Users</h2>";
+                    if ($tests !== false && !empty($tests)) {
+                        echo "<h2>tests</h2>";
                         echo "<ul>";
-                        foreach ($users as $user) {
-                            echo "<li>ID: {$user['id']}, Name: {$user['name']}, Age: {$user['age']}</li>";
+                        foreach ($tests as $test) {
+                            echo "<li>ID: {$test['id']}, Name: {$test['name']}, Age: {$test['age']}</li>";
                         }
                         echo "</ul>";
                     } else {
-                        echo "Failed to fetch users.<br>";
+                        echo "Failed to fetch tests.<br>";
                     }
                 } else {
                     echo "Commit failed.<br>";
                 }
             } else {
                 // Rollback transaction if any insertion failed
-                $alterQuery = "ALTER TABLE users AUTO_INCREMENT = 1;";
-                $rollback = $db->rollback($alterQuery);
+                $rollback = $db->rollback();
                 if ($rollback) {
-                    echo "Transaction rolled back successfully and 'users' table altered.<br>";
+                    echo "Rollback performed due to failed insertion.<br>";
 
-                    // Fetch and display users from 'users' table after rollback
-                    $selectQuery = "SELECT id, name, age FROM users";
-                    $users = $db->executeQuery($selectQuery);
+                    // Fetch and display tests from 'tests' table after rollback
+                    $selectQuery = "SELECT id, name, age FROM tests";
+                    $tests = $db->executeQuery($selectQuery);
 
-                    if ($users !== false && $users !== []) {
-                        echo "<h2>Users (after rollback)</h2>";
+                    if ($tests !== false && !empty($tests)) {
+                        echo "<h2>tests (after rollback)</h2>";
                         echo "<ul>";
-                        foreach ($users as $user) {
-                            echo "<li>ID: {$user['id']}, Name: {$user['name']}, Age: {$user['age']}</li>";
+                        foreach ($tests as $test) {
+                            echo "<li>ID: {$test['id']}, Name: {$test['name']}, Age: {$test['age']}</li>";
                         }
                         echo "</ul>";
                         echo "<h1>testRollback succeeded.</h1>";
                     } else {
-                        echo "Failed to fetch users after rollback.<br>";
+                        echo "Failed to fetch tests after rollback.<br>";
                     }
                 } else {
-                    echo "<h1>Rollback failed.</h1>";
+                    echo "Rollback failed.<br>";
                 }
             }
         } else {
@@ -228,9 +213,9 @@ class DatabaseTest
      * Function to demonstrate various database operations.
      *
      * @param string $dbHost The host name for the database connection.
-     * @param string $dbRoot The username (root) for the database connection.
+     * @param string $dbRoot The testname (root) for the database connection.
      * @param string $dbName The name of the database to connect to.
-     * @param string $dbPassword The password for the database user.
+     * @param string $dbPassword The password for the database test.
      * @param string|null $dbPort The port number for the database connection (can be null).
      */
     public static function testDatabaseOperations($dbHost, $dbRoot, $dbName, $dbPassword, $dbPort)
@@ -259,18 +244,19 @@ class DatabaseTest
 
             echo "Number of open connections before disconnect: " . $db->getOpenConnections() . "<br>";
 
-            echo "Disconnection...<br>";
+            echo "Disconnecting...<br>";
 
             $db->disconnect();
 
             echo "Number of open connections after disconnect: " . $db->getOpenConnections() . "<br>";
 
-            echo "---------------------------<br>";
+            echo "---------------------------";
 
             if ($db->getOpenConnections() === 0) {
-                echo "<h1>All tests in 'DatabaseTest.php' succeeded.</h1>";
+                echo "<h1>End of 'DatabaseTest.php'.</h1>";
+                echo "---------------------------<br>";
             } else {
-                echo "The connection is not closed. Check that.";
+                echo "Connection is not closed. Please check.";
             }
         } catch (\Exception $e) {
             echo "An error occurred: " . $e->getMessage();

@@ -8,6 +8,8 @@ use PDO;
 use PDOException;
 
 /**
+ * Class Database
+ * 
  * Singleton class to manage database connections using PDO.
  */
 class Database
@@ -166,12 +168,15 @@ class Database
      * @param string $query The SQL query to execute.
      * @param array $params The parameters for the query. Should be an associative array where keys are parameter names.
      * @param bool $fetchResult Whether to fetch any result (default true).
-     * @return mixed The result of the query execution (true for INSERT success, array for SELECT, false on failure).
+     * @return mixed The result of the query execution (true for INSERT or DELETE success, array for SELECT, false on failure).
      */
     public function executeQueryParam($query, $params, $fetchResult = true)
     {
         try {
+            // Prepare the SQL statement
             $statement = $this->getConnection()->prepare($query);
+
+            // Execute the statement with parameters
             $success = $statement->execute($params);
 
             if ($fetchResult) {
@@ -201,7 +206,7 @@ class Database
                 return true;
             } else {
                 // Start a new transaction
-                $success = $this->connection->beginTransaction();
+                $success = $this->getConnection()->beginTransaction();
                 if ($success) {
                     $this->inTransaction = true;
                 }
@@ -215,21 +220,30 @@ class Database
     }
 
     /**
-     * Commit the transaction.
+     * Commit the transaction and optionally alter the specified table on success.
      * 
+     * @param string|null $alterQuery The SQL query to alter the table after commit, default null.
      * @return bool True on success, false on failure.
      */
-    public function commit()
+    public function commit($alterQuery = null)
     {
         try {
             if ($this->inTransaction) {
-                $success = $this->connection->commit();
+                // Attempt to commit the transaction
+                $success = $this->getConnection()->commit();
                 if ($success) {
                     $this->inTransaction = false;
+                    if ($alterQuery !== null) {
+                        // Call private method to alter the table after successful commit
+                        $this->alterTable($alterQuery);
+                    }
+                    return true;
+                } else {
+                    return false; // Commit failed
                 }
-                return $success;
+            } else {
+                return false; // No active transaction to commit
             }
-            return false; // No active transaction to commit
         } catch (PDOException $e) {
             // Log commit error
             error_log('Failed to commit transaction: ' . $e->getMessage());
@@ -240,25 +254,28 @@ class Database
     /**
      * Rollback the transaction and alter the specified table on success.
      * 
-     * @param string $alterQuery The SQL query to alter the table after rollback.
+     * @param string $alterQuery The SQL query to alter the table after rollback, default null.
      * @return bool True on success, false on failure.
-     * 
-     * @example "ALTER TABLE users AUTO_INCREMENT = 1;
      */
-    public function rollback($alterQuery)
+    public function rollback($alterQuery = null)
     {
         try {
             if ($this->inTransaction) {
-                // Rollback the transaction
-                $success = $this->connection->rollBack();
+                // Attempt to rollback the transaction
+                $success = $this->getConnection()->rollBack();
                 if ($success) {
                     $this->inTransaction = false;
-                    // Call private method to alter the table after successful rollback
-                    return $this->alterTableAfterRollback($alterQuery);
+                    if ($alterQuery !== null) {
+                        // Call private method to alter the table after successful rollback
+                        $this->alterTable($alterQuery);
+                    }
+                    return true;
+                } else {
+                    return false; // Rollback failed
                 }
-                return false; // Rollback failed
+            } else {
+                return false; // No active transaction to rollback
             }
-            return false; // No active transaction to rollback
         } catch (PDOException $e) {
             // Log rollback error
             error_log('Failed to rollback transaction: ' . $e->getMessage());
@@ -267,31 +284,21 @@ class Database
     }
 
     /**
-     * Alter a specified table after a successful rollback.
+     * Alter a specified table after a successful commit or rollback.
      * Set auto increment starting value to 1 for the 'id' column.
      *
      * @param string $alterQuery The SQL query to alter the table.
      * @return bool True on success, false on failure.
-     * 
-     * @example ALTER TABLE users AUTO_INCREMENT = 1;
      */
-    private function alterTableAfterRollback($alterQuery)
+    private function alterTable($alterQuery)
     {
         try {
-            // Prepare the query
-            $stmt = $this->connection->prepare($alterQuery);
-
-            // Execute the prepared statement
-            $success = $stmt->execute();
-
-            if ($success) {
-                return true;
-            } else {
-                return false;
-            }
+            // Execute the SQL query using the database connection
+            $this->getConnection()->query($alterQuery);
+            return true;
         } catch (PDOException $e) {
             // Log alter table error
-            error_log('Failed to alter table after rollback: ' . $e->getMessage());
+            error_log('Failed to alter table: ' . $e->getMessage());
             return false;
         }
     }
