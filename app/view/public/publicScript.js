@@ -1,9 +1,9 @@
 // File verified
 
 /**
- * Import necessary functions and variables.
+ * Import necessary functions.
  */
-import * as functions from '../../utilities/functions/js/publicFunction.js';
+import * as publicFunction from '../../utilities/functions/js/publicFunction.js';
 
 /**
  * DOM elements for the "sign up" form.
@@ -28,16 +28,16 @@ const myContentLogin = document.getElementById('loginBoxJS');
 const loginErrorContent = document.getElementById('loginErrorJS');
 
 // Display and remove content for the sign-up and login buttons
-functions.displayRemoveContent(myButtonSignup, myButtonLogin, myContentSignup, myContentLogin);
+publicFunction.displayRemoveContent(myButtonSignup, myButtonLogin, myContentSignup, myContentLogin);
 
 // Close the sign-up content when the sign-up button is clicked
-functions.closeContent(myButtonSignup, myContentSignup);
+publicFunction.closeContent(myButtonSignup, myContentSignup);
 
 // Close the login content when the login button is clicked
-functions.closeContent(myButtonLogin, myContentLogin);
+publicFunction.closeContent(myButtonLogin, myContentLogin);
 
 // Display an error message in the sign-up section
-functions.displayError(signupError, signupErrorContent, myContentSignup);
+publicFunction.displayError(signupError, signupErrorContent, myContentSignup);
 
 // Display an error message in the login section
-functions.displayError(loginError, loginErrorContent, myContentLogin);
+publicFunction.displayError(loginError, loginErrorContent, myContentLogin);

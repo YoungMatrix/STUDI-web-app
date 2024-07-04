@@ -1,0 +1,123 @@
+/* File verified */
+
+/* Begin body header */
+
+/* Media queries for screens narrower than 600px */
+@media only screen and (max-width: 600px) {
+
+    /* Styles for historicalList */
+    header .historicalList {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        word-wrap: break-word;
+        max-height: 665px;
+        width: 218px;
+        background-color: #f0f0f0;
+        padding: 0px 8px 10px 10px;
+        margin-top: 73px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+}
+
+/* Media queries for screens wider than or equal to 600px */
+@media only screen and (min-width: 600px) {
+
+    /* Styles for historicalList */
+    header .historicalList {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        max-height: 630px;
+        background-color: #f0f0f0;
+        padding: 0px 8px 10px 10px;
+        margin-top: 45px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+}
+
+/* Styles for history */
+header .history {
+    font-size: 12px;
+    margin-top: 10px;
+    color: red;
+    font-style: italic;
+    border: 1px solid grey;
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+/* End body header */
+
+/* Begin body home */
+
+/* Styles for sub-home links */
+.sub-home a {
+    display: flex;
+    color: #999;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 12px;
+    margin-left: -10px;
+    cursor: pointer;
+}
+
+/* Styles for sub-home links on hover */
+.sub-home a:hover {
+    background: #FF0000;
+    color: #fff;
+    margin-left: 0px;
+    font-style: italic;
+}
+
+/* Styles for appointmentForm within sub-home */
+.sub-home .appointmentForm {
+    display: none;
+    margin-top: 15px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 0px 0px 20px 20px;
+    animation: animeY 0.5s linear;
+}
+
+/* Keyframes animation for animeY */
+@keyframes animeY {
+    from {
+        transform: translateY(-50px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Styles for form-group */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Styles for select and input[type="date"] */
+select,
+input[type="date"] {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+/* Styles for buttons */
+button {
+    font-size: 15px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+/* End body home */

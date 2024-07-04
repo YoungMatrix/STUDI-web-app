@@ -10,11 +10,11 @@
 $autoload = $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $autoload;
 
-// Use statements to include necessary classes.
+// Use statements to include necessary classes
 use Configuration\Config;
 use PHPFunctions\FileFunction;
 
-// Initialize the configuration.
+// Initialize the configuration
 Config::init();
 
 /**

@@ -82,6 +82,16 @@ class Config
     private static $loginError;
 
     /**
+     * @var bool $appointmentSuccess Flag indicating whether there is an appointment success.
+     */
+    private static $appointmentSuccess;
+
+    /**
+     * @var bool $appointmentError Flag indicating whether there is an error during appointment.
+     */
+    private static $appointmentError;
+
+    /**
      * @var mixed $database Database instance.
      */
     private static $database;
@@ -323,6 +333,26 @@ class Config
     public static function getLoginError()
     {
         return self::$loginError;
+    }
+
+    /**
+     * Get the appointment success status.
+     *
+     * @return bool
+     */
+    public static function getAppointmentSuccess()
+    {
+        return self::$appointmentSuccess;
+    }
+
+    /**
+     * Get the appointment error status.
+     *
+     * @return bool
+     */
+    public static function getAppointmentError()
+    {
+        return self::$appointmentError;
     }
 
     /**
