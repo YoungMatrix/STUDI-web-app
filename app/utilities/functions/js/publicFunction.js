@@ -1,51 +1,6 @@
 // File verified
 
 /**
- * Display or remove the content elements when a button is clicked.
- * 
- * This function allows displaying or removing content elements based on user actions, such as clicking a button.
- * It handles the display of one content while hiding the other.
- * 
- * @param {HTMLElement} contentButton - The button that triggers the display of the content.
- * @param {HTMLElement} otherContentButton - The button associated with the other content.
- * @param {HTMLElement} content - The content to be displayed or removed.
- * @param {HTMLElement} otherContent - The content to be hidden when displaying the specified content.
- */
-export function displayRemoveContent(contentButton, otherContentButton, content, otherContent) {
-    // Add an event listener to the contentButton
-    contentButton.addEventListener('click', function () {
-        // If the content is not already displayed
-        if (content.style.display !== 'flex') {
-            // Display the content
-            content.style.display = 'flex';
-            // Set the flex direction to column
-            content.style.flexDirection = 'column';
-            // Hide the otherContent
-            otherContent.style.display = 'none';
-        } else {
-            // Otherwise, hide the content
-            content.style.display = 'none';
-        }
-    });
-
-    // Add an event listener to the otherContentButton
-    otherContentButton.addEventListener('click', function () {
-        // If the otherContent is not already displayed
-        if (otherContent.style.display !== 'flex') {
-            // Display the otherContent
-            otherContent.style.display = 'flex';
-            // Set the flex direction to column
-            otherContent.style.flexDirection = 'column';
-            // Hide the content
-            content.style.display = 'none';
-        } else {
-            // Otherwise, hide the otherContent
-            otherContent.style.display = 'none';
-        }
-    });
-}
-
-/**
  * Close the form when it loses focus.
  * 
  * This function closes the form when it loses focus, ensuring a clean user experience.

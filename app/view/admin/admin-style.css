@@ -1,0 +1,161 @@
+/* File verified */
+
+/* Begin body header */
+
+@media only screen and (max-width: 600px) {
+
+    /* Styles for smaller screens */
+    header .planningList {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        word-wrap: break-word;
+        max-height: 665px;
+        width: 218px;
+        background-color: #f0f0f0;
+        padding: 0px 8px 10px 10px;
+        margin-top: 111px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+
+    /* Styles for smaller screens */
+    header .doctorList {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        word-wrap: break-word;
+        max-height: 665px;
+        width: 218px;
+        background-color: #f0f0f0;
+        padding: 0px 8px 10px 10px;
+        margin-top: 73px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+
+    /* Styles for larger screens */
+    header .planningList,
+    header .doctorList {
+        display: none;
+        position: absolute;
+        overflow: auto;
+        max-height: 630px;
+        background-color: #f0f0f0;
+        padding: 0px 8px 10px 10px;
+        margin-top: 45px;
+        right: 33px;
+        border: 1px solid grey;
+        border-radius: 10px;
+    }
+}
+
+header .history {
+    /* Styles for history section */
+    font-size: 12px;
+    margin-top: 10px;
+    color: red;
+    font-style: italic;
+    border: 1px solid grey;
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+/* End body header */
+
+/* Begin body home */
+
+.sub-home a {
+    /* Styles for home page links */
+    display: flex;
+    color: #999;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 12px;
+    margin-left: -10px;
+    cursor: pointer;
+}
+
+.sub-home a:hover {
+    /* Hover styles for home page links */
+    background: #FF0000;
+    color: #fff;
+    margin-left: 0px;
+    font-style: italic;
+}
+
+.sub-home .newDoctorForm,
+.sub-home .doctorPlanningForm {
+    /* Styles for forms on the home page */
+    display: none;
+    flex-direction: column;
+    margin-top: 15px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 0px 20px 20px 20px;
+    animation: animeY 0.5s linear;
+}
+
+@keyframes animeY {
+
+    /* Animation for forms */
+    from {
+        transform: translateY(-50px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.form-group {
+    /* Styles for form groups */
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+
+    /* Styles for smaller screens */
+    select,
+    input {
+        /* Styles for form inputs */
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        width: 185px;
+        font-size: 13px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+
+    /* Styles for larger screens */
+    select,
+    input {
+        /* Styles for form inputs */
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+}
+
+button {
+    /* Styles for buttons */
+    font-size: 15px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+/* End body home */

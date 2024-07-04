@@ -52,17 +52,17 @@ class Config
     private static $secretReCaptchaKey;
 
     /**
-     * @var mixed|null $person Instance of the logged-in person, retrieved from the session.
+     * @var Person|null $person Instance of the logged-in person, retrieved from the session.
      */
     private static $person;
 
     /**
-     * @var mixed|null $patternList Pattern list, retrieved from the session.
+     * @var array|null $patternList List of patterns retrieved from the session.
      */
     private static $patternList;
 
     /**
-     * @var mixed|null $fieldList Field list, retrieved from the session.
+     * @var array|null $fieldList List of fields retrieved from the session.
      */
     private static $fieldList;
 
@@ -70,6 +70,16 @@ class Config
      * @var mixed|null $doctorMap Doctor map, retrieved from the session.
      */
     private static $doctorMap;
+
+    /**
+     * @var array $doctorRecords Doctor records retrieved from the session.
+     */
+    private static $doctorRecords;
+
+    /**
+     * @var array $planningRecords Planning records retrieved from the session.
+     */
+    private static $planningRecords;
 
     /**
      * @var bool $signupError Flag indicating whether there is an error during signup.
@@ -80,6 +90,26 @@ class Config
      * @var bool $loginError Flag indicating whether there is an error during login.
      */
     private static $loginError;
+
+    /**
+     * @var bool $newDoctorSuccess Flag indicating the success of adding a new doctor.
+     */
+    private static $newDoctorSuccess;
+
+    /**
+     * @var bool $newDoctorError Flag indicating an error while adding a new doctor.
+     */
+    private static $newDoctorError;
+
+    /**
+     * @var bool $changePlanningSuccess Flag indicating the success of changing planning.
+     */
+    private static $changePlanningSuccess;
+
+    /**
+     * @var bool $changePlanningError Flag indicating an error while changing planning.
+     */
+    private static $changePlanningError;
 
     /**
      * @var bool $appointmentSuccess Flag indicating whether there is an appointment success.
@@ -166,6 +196,20 @@ class Config
             self::$doctorMap = null;
         }
 
+        // Retrieve doctor records from session if available, otherwise initialize as empty array
+        if (isset($_SESSION['doctorRecords'])) {
+            self::$doctorRecords = $_SESSION['doctorRecords'];
+        } else {
+            self::$doctorRecords = [];
+        }
+
+        // Retrieve planning records from session if available, otherwise initialize as empty array
+        if (isset($_SESSION['planningRecords'])) {
+            self::$planningRecords = $_SESSION['planningRecords'];
+        } else {
+            self::$planningRecords = [];
+        }
+
         // Retrieve signup error from session, if available.
         if (isset($_SESSION['signupError'])) {
             self::$signupError = $_SESSION['signupError'];
@@ -178,6 +222,34 @@ class Config
             self::$loginError = $_SESSION['loginError'];
         } else {
             self::$loginError = false;
+        }
+
+        // Retrieve new doctor success flag from session, if available.
+        if (isset($_SESSION['newDoctorSuccess'])) {
+            self::$newDoctorSuccess = $_SESSION['newDoctorSuccess'];
+        } else {
+            self::$newDoctorSuccess = false;
+        }
+
+        // Retrieve new doctor error flag from session, if available.
+        if (isset($_SESSION['newDoctorError'])) {
+            self::$newDoctorError = $_SESSION['newDoctorError'];
+        } else {
+            self::$newDoctorError = false;
+        }
+
+        // Retrieve change planning success flag from session, if available.
+        if (isset($_SESSION['changePlanningSuccess'])) {
+            self::$changePlanningSuccess = $_SESSION['changePlanningSuccess'];
+        } else {
+            self::$changePlanningSuccess = false;
+        }
+
+        // Retrieve change planning error flag from session, if available.
+        if (isset($_SESSION['changePlanningError'])) {
+            self::$changePlanningError = $_SESSION['changePlanningError'];
+        } else {
+            self::$changePlanningError = false;
         }
 
         // Handle maintenance mode or initialize the database.
@@ -228,7 +300,7 @@ class Config
     /**
      * Get the root path of the web server.
      *
-     * @return string
+     * @return string Root path of the web server.
      */
     public static function getRootPath()
     {
@@ -238,7 +310,7 @@ class Config
     /**
      * Get the path to the maintenance view file.
      *
-     * @return string
+     * @return string Path to the maintenance view file.
      */
     public static function getMaintenanceViewPath()
     {
@@ -248,7 +320,7 @@ class Config
     /**
      * Get the pepper for password hashing.
      *
-     * @return string
+     * @return string Pepper for password hashing.
      */
     public static function getPepper()
     {
@@ -258,7 +330,7 @@ class Config
     /**
      * Get the public reCAPTCHA key.
      *
-     * @return string
+     * @return string Public reCAPTCHA key.
      */
     public static function getPublicReCaptchaKey()
     {
@@ -268,7 +340,7 @@ class Config
     /**
      * Get the secret reCAPTCHA key.
      *
-     * @return string
+     * @return string Secret reCAPTCHA key.
      */
     public static function getSecretReCaptchaKey()
     {
@@ -278,7 +350,7 @@ class Config
     /**
      * Get the instance of the logged-in person.
      *
-     * @return mixed|null
+     * @return Person|null Instance of the logged-in person.
      */
     public static function getPerson()
     {
@@ -288,7 +360,7 @@ class Config
     /**
      * Get the pattern list.
      *
-     * @return mixed|null
+     * @return array|null List of patterns, or null if not set.
      */
     public static function getPatternList()
     {
@@ -298,7 +370,7 @@ class Config
     /**
      * Get the field list.
      *
-     * @return mixed|null
+     * @return array|null List of fields, or null if not set.
      */
     public static function getFieldList()
     {
@@ -308,7 +380,7 @@ class Config
     /**
      * Get the doctor map.
      *
-     * @return mixed|null
+     * @return mixed|null Doctor map retrieved from the session, or null if not set.
      */
     public static function getDoctorMap()
     {
@@ -316,9 +388,29 @@ class Config
     }
 
     /**
+     * Get the doctor records retrieved from the session.
+     *
+     * @return array Array containing doctor records.
+     */
+    public static function getDoctorRecords()
+    {
+        return self::$doctorRecords;
+    }
+
+    /**
+     * Get the planning records retrieved from the session.
+     *
+     * @return array Array containing planning records.
+     */
+    public static function getPlanningRecords()
+    {
+        return self::$planningRecords;
+    }
+
+    /**
      * Get the signup error status.
      *
-     * @return bool
+     * @return bool Signup error status.
      */
     public static function getSignupError()
     {
@@ -328,7 +420,7 @@ class Config
     /**
      * Get the login error status.
      *
-     * @return bool
+     * @return bool Login error status.
      */
     public static function getLoginError()
     {
@@ -336,9 +428,49 @@ class Config
     }
 
     /**
+     * Get the flag indicating whether the new doctor operation was successful.
+     *
+     * @return bool Flag indicating success status.
+     */
+    public static function getNewDoctorSuccess()
+    {
+        return self::$newDoctorSuccess;
+    }
+
+    /**
+     * Get the flag indicating whether there was an error during the new doctor operation.
+     *
+     * @return bool Flag indicating error status.
+     */
+    public static function getNewDoctorError()
+    {
+        return self::$newDoctorError;
+    }
+
+    /**
+     * Get the flag indicating whether the change planning operation was successful.
+     *
+     * @return bool Flag indicating success status.
+     */
+    public static function getChangePlanningSuccess()
+    {
+        return self::$changePlanningSuccess;
+    }
+
+    /**
+     * Get the flag indicating whether there was an error during the change planning operation.
+     *
+     * @return bool Flag indicating error status.
+     */
+    public static function getChangePlanningError()
+    {
+        return self::$changePlanningError;
+    }
+
+    /**
      * Get the appointment success status.
      *
-     * @return bool
+     * @return bool Flag indicating the success status of the appointment.
      */
     public static function getAppointmentSuccess()
     {
@@ -348,7 +480,7 @@ class Config
     /**
      * Get the appointment error status.
      *
-     * @return bool
+     * @return bool Flag indicating the error status of the appointment.
      */
     public static function getAppointmentError()
     {
@@ -358,7 +490,7 @@ class Config
     /**
      * Get the database instance.
      *
-     * @return mixed
+     * @return mixed Database instance.
      */
     public static function getDatabase()
     {

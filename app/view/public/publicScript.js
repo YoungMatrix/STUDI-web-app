@@ -3,6 +3,7 @@
 /**
  * Import necessary functions.
  */
+import * as commonFunction from '../../utilities/functions/js/commonFunction.js';
 import * as publicFunction from '../../utilities/functions/js/publicFunction.js';
 
 /**
@@ -28,7 +29,7 @@ const myContentLogin = document.getElementById('loginBoxJS');
 const loginErrorContent = document.getElementById('loginErrorJS');
 
 // Display and remove content for the sign-up and login buttons
-publicFunction.displayRemoveContent(myButtonSignup, myButtonLogin, myContentSignup, myContentLogin);
+commonFunction.displayRemoveContent(myButtonSignup, myButtonLogin, myContentSignup, myContentLogin);
 
 // Close the sign-up content when the sign-up button is clicked
 publicFunction.closeContent(myButtonSignup, myContentSignup);
