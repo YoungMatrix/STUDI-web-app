@@ -19,6 +19,7 @@ use PHPFunctions\DoctorFunction;
 use PHPFunctions\HistoryFunction;
 use PHPFunctions\VerificationFunction;
 use PHPFunctions\PasswordFunction;
+use PHPFunctions\PlanningFunction;
 use PHPFunctions\UserFunction;
 use Classes\Patient;
 
@@ -341,15 +342,48 @@ class UserModelTest
                 echo "PASS: Doctor records retrieved successfully.<br>";
 
                 // Output the retrieved doctor records for verification
+                /*
                 echo "<pre>";
                 print_r($doctorRecords);
-                echo "</pre>";
+                echo "</pre>"; 
+                */
             } else {
                 echo "FAIL: Failed to retrieve doctor records.<br>";
             }
         } catch (\Exception $e) {
             // Handle any exceptions thrown during testing
             echo "Error during testRetrieveDoctor: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Test method for retrievePlanning function.
+     */
+    public static function testRetrievePlanning()
+    {
+        try {
+            // Obtain database connection.
+            $database = Config::getDatabase();
+
+            // Call the retrievePlanning function.
+            $planningRecords = PlanningFunction::retrievePlanning($database);
+
+            // Check if records were retrieved successfully.
+            if (!empty($planningRecords)) {
+                echo "PASS: Planning records retrieved successfully.<br>";
+
+                // Output the retrieved planning records for verification
+                /*
+                echo "<pre>";
+                print_r($planningRecords);
+                echo "</pre>";
+                */
+            } else {
+                echo "FAIL: Failed to retrieve planning records.<br>";
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during testing
+            echo "Error during testRetrievePlanning: " . $e->getMessage() . "<br>";
         }
     }
 
@@ -537,6 +571,9 @@ class UserModelTest
 
         echo "<h1>Running testRetrieveDoctor...</h1>";
         self::testRetrieveDoctor();
+
+        echo "<h1>Running testRetrievePlanning...</h1>";
+        self::testRetrievePlanning();
 
         echo "<h1>Running testCleanUp...</h1>";
         self::testCleanUp();

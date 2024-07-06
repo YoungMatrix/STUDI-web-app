@@ -173,6 +173,9 @@ class UserFunction
                     // Retrieve doctor records and store them in session and class property
                     Config::setDoctorRecords(DoctorFunction::retrieveDoctor($database));
 
+                    // Retrieve planning records and store them in session and class property
+                    Config::setPlanningRecords(PlanningFunction::retrievePlanning($database));
+
                     // Create a new Admin object and return it
                     return new Admin(
                         $admin['last_name_admin'],

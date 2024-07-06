@@ -441,6 +441,52 @@ class DatabaseFunction
     }
 
     /**
+     * Retrieve planning and history details from the database.
+     *
+     * This function retrieves planning and history details based on a SQL query stored in an external file.
+     * It executes the query using the Database instance provided and returns the result as an array.
+     *
+     * @param Database $database The Database instance used for querying.
+     * @param string $today The date parameter to filter the planning details.
+     *
+     * @return array|null Returns an array containing planning and history details, or null if no records found or an error occurred.
+     */
+    public static function getPlanningDetails($database, $today)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_planning_details.sql';
+
+            // Check if the SQL file exists.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+
+            // Read the SQL query from the file.
+            $query = file_get_contents($sqlFilePath);
+
+            // Prepare the parameters for the query.
+            $params = [':today' => $today];
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params);
+
+            // Check if a result is found.
+            if ($result !== false && !empty($result)) {
+                return $result; // Return the result array if not empty
+            } else {
+                return null; // Return null if no records found
+            }
+        } catch (\Exception $e) {
+            // Log the exception message to error log.
+            error_log('Error in getPlanningDetails function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
      * Retrieves patient count by email.
      *
      * This function retrieves the count of patients with the given email from the database.

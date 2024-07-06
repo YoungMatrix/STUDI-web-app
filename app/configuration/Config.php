@@ -602,6 +602,19 @@ class Config
     }
 
     /**
+     * Set the retrieved planning records in the session and class property.
+     *
+     * This function stores the retrieved planning records both in the session variable and the static class property.
+     *
+     * @param array $planningRecords An array of Planning objects representing the retrieved planning records.
+     */
+    public static function setPlanningRecords($planningRecords)
+    {
+        $_SESSION['planningRecords'] = $planningRecords;
+        self::$planningRecords = $planningRecords;
+    }
+
+    /**
      * Set the signup error in the session.
      *
      * @param bool $signupError The signup error to store in session.
