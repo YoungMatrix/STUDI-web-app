@@ -11,9 +11,6 @@ namespace PHPFunctions;
 $autoload = $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $autoload;
 
-// Use statements to include necessary classes.
-use PHPFunctions\DatabaseFunction;
-
 // DateTime importation
 use DateTime;
 use DateInterval;

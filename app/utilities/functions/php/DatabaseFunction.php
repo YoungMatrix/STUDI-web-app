@@ -401,6 +401,46 @@ class DatabaseFunction
     }
 
     /**
+     * Retrieves details of doctors from the database.
+     *
+     * This method reads an SQL query from a file to retrieve details such as
+     * doctor ID, field ID, last name, first name, and email for all doctors,
+     * ordered by doctor ID in ascending order.
+     *
+     * @param Database $database The Database instance to execute the query.
+     * @return array|null Returns an array of doctor details if successful, or null if there's an error or no results.
+     */
+    public static function getDoctorDetails($database)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_doctor_details.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQuery method of the Database instance.
+            $result = $database->executeQuery($query);
+
+            // Check if a result is found.
+            if ($result !== false && !empty($result)) {
+                return $result;
+            } else {
+                return null;
+            }
+        } catch (\Exception $e) {
+            // Log the exception message.
+            error_log('Error in getDoctorDetails function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
      * Retrieves patient count by email.
      *
      * This function retrieves the count of patients with the given email from the database.

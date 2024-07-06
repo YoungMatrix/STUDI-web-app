@@ -589,6 +589,19 @@ class Config
     }
 
     /**
+     * Set the retrieved doctor records in the session and class property.
+     *
+     * This function stores the retrieved doctor records both in the session variable and the static class property.
+     *
+     * @param array $doctorRecords An array of Doctor objects representing the retrieved doctor records.
+     */
+    public static function setDoctorRecords($doctorRecords)
+    {
+        $_SESSION['doctorRecords'] = $doctorRecords;
+        self::$doctorRecords = $doctorRecords;
+    }
+
+    /**
      * Set the signup error in the session.
      *
      * @param bool $signupError The signup error to store in session.

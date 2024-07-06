@@ -15,6 +15,7 @@ require_once $autoload;
 use Configuration\Config;
 use Classes\Person;
 use PHPFunctions\DatabaseFunction;
+use PHPFunctions\DoctorFunction;
 use PHPFunctions\HistoryFunction;
 use PHPFunctions\VerificationFunction;
 use PHPFunctions\PasswordFunction;
@@ -324,6 +325,35 @@ class UserModelTest
     }
 
     /**
+     * Test method for retrieveDoctor function.
+     */
+    public static function testRetrieveDoctor()
+    {
+        try {
+            // Obtain database connection.
+            $database = Config::getDatabase();
+
+            // Call the retrieveDoctor function.
+            $doctorRecords = DoctorFunction::retrieveDoctor($database);
+
+            // Check if records were retrieved successfully.
+            if (!empty($doctorRecords)) {
+                echo "PASS: Doctor records retrieved successfully.<br>";
+
+                // Output the retrieved doctor records for verification
+                echo "<pre>";
+                print_r($doctorRecords);
+                echo "</pre>";
+            } else {
+                echo "FAIL: Failed to retrieve doctor records.<br>";
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during testing
+            echo "Error during testRetrieveDoctor: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
      * Clean up history and planning records by history ID.
      *
      * @param Database $database Database connection object.
@@ -504,6 +534,9 @@ class UserModelTest
 
         echo "<h1>Running testSaveHistory...</h1>";
         self::testSaveHistory();
+
+        echo "<h1>Running testRetrieveDoctor...</h1>";
+        self::testRetrieveDoctor();
 
         echo "<h1>Running testCleanUp...</h1>";
         self::testCleanUp();

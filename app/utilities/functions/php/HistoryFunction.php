@@ -14,8 +14,6 @@ $autoload = $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $autoload;
 
 // Use statements to include necessary classes.
-use PHPFunctions\DatabaseFunction;
-use PHPFunctions\PlanningFunction;
 use Classes\History;
 
 /**

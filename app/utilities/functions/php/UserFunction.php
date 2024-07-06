@@ -14,7 +14,7 @@ $autoload = $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 require_once $autoload;
 
 // Use statements to include necessary classes.
-use PHPFunctions\Database;
+use Configuration\Config;
 use Classes\Patient;
 use Classes\Admin;
 
@@ -170,6 +170,9 @@ class UserFunction
 
                 // Verify the hashed password against stored password using salt and pepper
                 if (PasswordFunction::verifyPassword($hashedPassword, $admin['password_admin'], $admin['salt_admin'], $hashedPepper)) {
+                    // Retrieve doctor records and store them in session and class property
+                    Config::setDoctorRecords(DoctorFunction::retrieveDoctor($database));
+
                     // Create a new Admin object and return it
                     return new Admin(
                         $admin['last_name_admin'],
