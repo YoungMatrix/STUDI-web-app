@@ -13,10 +13,17 @@ require_once $autoload;
 
 // Use statements to include necessary classes.
 use Configuration\Config;
+use Classes\Person;
+use PHPFunctions\DatabaseFunction;
+use PHPFunctions\HistoryFunction;
 use PHPFunctions\VerificationFunction;
 use PHPFunctions\PasswordFunction;
 use PHPFunctions\UserFunction;
 use Classes\Patient;
+
+// DateTime importation
+use DateTime;
+use DateInterval;
 
 // Initialize the configuration.
 Config::init();
@@ -227,42 +234,206 @@ class UserModelTest
             if ($retrievedPatient instanceof Patient) {
                 // Display success messages
                 echo "PASS: Patient retrieved and authenticated successfully.<br>";
-
-                // Begin transaction
-                $database->beginTransaction();
-
-                // Delete the patient from the database by email
-                $emailToDelete = 'john.doe@example.com';
-                $deleteQuery = "DELETE FROM patient WHERE email_patient = :email";
-                $deleteParams = [':email' => $emailToDelete];
-                $deleteSuccess = $database->executeQueryParam($deleteQuery, $deleteParams, false);
-
-                // Reset auto increment
-                $resetQuery = "ALTER TABLE patient AUTO_INCREMENT = 1";
-
-                if ($deleteSuccess) {
-                    // Commit transaction
-                    $database->commit($resetQuery);
-                    echo "PASS: Deleted patient successfully.<br>";
-                    echo "PASS: Reset auto increment successfully.<br>";
-                } else {
-                    echo "Failed to delete patient.<br>";
-                }
-
-                // SQL query to delete the table
-                $deleteQuery = "DROP TABLE IF EXISTS tests";
-
-                // Execute the query to delete the table
-                $database->executeQuery($deleteQuery);
-
-                // Output success message if the table was deleted successfully
-                echo "The 'tests' table has been deleted successfully.<br>";
             } else {
                 echo "Failed to retrieve and authenticate patient.<br>";
             }
         } catch (\Exception $e) {
             // Handle any exceptions thrown during testing
             echo "Error during testRetrievePerson: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Test method for saveHistory function.
+     */
+    public static function testSaveHistory()
+    {
+        try {
+            // Obtain database connection
+            $database = Config::getDatabase();
+
+            // Sample data for test
+            $testPatient = new Person('Doe', 'John', 'john.doe@example.com');
+
+            $patternName = 'Fatigue';
+            $fieldName = 'Médecine Générale';
+            $doctorName = 'GORGIO';
+            $entranceDate = '2024-01-01';
+            $releaseDate = '2024-01-02';
+
+            // Call the saveHistory method
+            $result = HistoryFunction::saveHistory($database, $testPatient, $patternName, $fieldName, $doctorName, $entranceDate, $releaseDate);
+
+            // Verify the result
+            if ($result) {
+                echo "PASS: History saved successfully.<br>";
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";
+
+                // Verify that planning was updated correctly
+                $lastHistoryId = $result['lastHistoryId'];
+                $doctorIdQuery = "SELECT id_doctor FROM doctor WHERE last_name_doctor = :doctorName";
+                $doctorIdParams = [':doctorName' => $doctorName];
+                $doctorIdResult = $database->executeQueryParam($doctorIdQuery, $doctorIdParams, true);
+                $doctorId = $doctorIdResult ? $doctorIdResult[0]['id_doctor'] : null;
+
+                if ($doctorId) {
+                    // Check each date in the range to ensure it was added to planning
+                    $currentDate = new DateTime($entranceDate);
+                    $releaseDateTime = new DateTime($releaseDate);
+                    $interval = new DateInterval('P1D');
+
+                    $allDatesExist = true;
+
+                    while ($currentDate <= $releaseDateTime) {
+                        $formattedDate = $currentDate->format('Y-m-d');
+                        $checkQuery = "SELECT COUNT(*) as count FROM planning WHERE id_history = :historyId AND id_confirmed_doctor = :doctorId AND date_planning = :date";
+                        $checkParams = [
+                            ':historyId' => $lastHistoryId,
+                            ':doctorId' => $doctorId,
+                            ':date' => $formattedDate
+                        ];
+                        $checkResult = $database->executeQueryParam($checkQuery, $checkParams);
+                        $planningExists = $checkResult && $checkResult[0]['count'] > 0;
+
+                        if (!$planningExists) {
+                            echo "FAIL: Planning entry missing for date: $formattedDate.<br>";
+                            $allDatesExist = false;
+                            break;
+                        }
+
+                        $currentDate->add($interval);
+                    }
+
+                    if ($allDatesExist) {
+                        echo "PASS: All planning entries added successfully.<br>";
+                    }
+                } else {
+                    echo "FAIL: Could not retrieve doctor ID.<br>";
+                }
+            } else {
+                echo "FAIL: Failed to save history.<br>";
+            }
+            // Clean up
+            self::cleanUpHistoryAndPlanning($database, $lastHistoryId);
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during testing
+            echo "Error during testSaveHistory: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Clean up history and planning records by history ID.
+     *
+     * @param Database $database Database connection object.
+     * @param int $historyId ID of the history record to delete.
+     */
+    private static function cleanUpHistoryAndPlanning($database, $historyId)
+    {
+        try {
+            // Delete history record
+            $deleteHistoryQuery = "DELETE FROM history WHERE id_history = :id";
+            $deleteHistoryParams = [':id' => $historyId];
+            $database->executeQueryParam($deleteHistoryQuery, $deleteHistoryParams, false);
+
+            // Delete planning records associated with the history ID
+            $deletePlanningQuery = "DELETE FROM planning WHERE id_history = :id";
+            $deletePlanningParams = [':id' => $historyId];
+            $database->executeQueryParam($deletePlanningQuery, $deletePlanningParams, false);
+
+            // Alter history table
+            $alterQuery = DatabaseFunction::alterHistoryTableQuery();
+            $database->executeQuery($alterQuery);
+
+            // Alter planning table
+            $alterQuery = DatabaseFunction::alterPlanningTableQuery();
+            $database->executeQuery($alterQuery);
+
+            echo "PASS: History and planning records deleted successfully.<br>";
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during deletion
+            echo "Error cleaning up history and planning records: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Clean up method for test environment.
+     */
+    public static function testCleanUp()
+    {
+        try {
+            // Obtain database connection
+            $database = Config::getDatabase();
+
+            // Sample data for test
+            $testPatientEmail = 'john.doe@example.com';
+
+            // Delete patient and reset auto increment
+            self::deletePatientAndResetAutoIncrement($database, $testPatientEmail);
+
+            // Delete test tables
+            self::deleteTestTables($database);
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during clean-up
+            echo "Error during test clean-up: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Delete a patient from the database by email and reset auto increment.
+     *
+     * @param Database $database Database connection object.
+     * @param string $emailToDelete Email of the patient to delete.
+     */
+    private static function deletePatientAndResetAutoIncrement($database, $emailToDelete)
+    {
+        try {
+            // Begin transaction
+            $database->beginTransaction();
+
+            // Delete the patient from the database by email
+            $deleteQuery = "DELETE FROM patient WHERE email_patient = :email";
+            $deleteParams = [':email' => $emailToDelete];
+            $deleteSuccess = $database->executeQueryParam($deleteQuery, $deleteParams, false);
+
+            // Reset auto increment
+            $resetQuery = "ALTER TABLE patient AUTO_INCREMENT = 1";
+
+            if ($deleteSuccess) {
+                // Commit transaction
+                $database->commit($resetQuery);
+                echo "PASS: Deleted patient successfully.<br>";
+                echo "PASS: Reset auto increment successfully.<br>";
+            } else {
+                echo "Failed to delete patient.<br>";
+            }
+        } catch (\Exception $e) {
+            // Rollback transaction and log error if deletion fails
+            $database->rollback();
+            echo "Error deleting patient: " . $e->getMessage() . "<br>";
+        }
+    }
+
+    /**
+     * Delete test tables if they exist.
+     *
+     * @param Database $database Database connection object.
+     */
+    private static function deleteTestTables($database)
+    {
+        try {
+            // SQL query to delete the table
+            $deleteQuery = "DROP TABLE IF EXISTS tests";
+
+            // Execute the query to delete the table
+            $database->executeQuery($deleteQuery);
+
+            // Output success message if the table was deleted successfully
+            echo "PASS: Deleted 'tests' table successfully.<br>";
+        } catch (\Exception $e) {
+            // Handle any exceptions thrown during table deletion
+            echo "Error deleting 'tests' table: " . $e->getMessage() . "<br>";
         }
     }
 
@@ -330,6 +501,12 @@ class UserModelTest
 
         echo "<h1>Running testRetrievePerson...</h1>";
         self::testRetrievePerson();
+
+        echo "<h1>Running testSaveHistory...</h1>";
+        self::testSaveHistory();
+
+        echo "<h1>Running testCleanUp...</h1>";
+        self::testCleanUp();
 
         echo "<h1>End of 'UserModelTest.php'.</h1>";
     }

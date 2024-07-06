@@ -58,6 +58,27 @@ if (isset($_POST['userEmail'], $_POST['userPassword'], $_POST['g-recaptcha-respo
 }
 
 /**
+ * Handles appointment creation.
+ *
+ * Checks if the required POST variables are set for appointment creation.
+ * If all required POST variables are set, attempts to add the appointment using UserModel::addAppointment().
+ * Clears login and signup error flags.
+ * If saved history exists, sets appointment success; otherwise, sets appointment error.
+ */
+if (isset($_POST['pattern'], $_POST['field'], $_POST['doctor'], $_POST['entranceDate'], $_POST['releaseDate'])) {
+    UserModel::addAppointment(); // Call UserModel method to add appointment
+
+    // Check if saved history exists
+    if (Config::getSavedHistory() !== null) {
+        Config::setAppointmentSuccess(true); // Set appointment success flag
+        Config::setAppointmentError(false); // Set appointment error flag
+    } else {
+        Config::setAppointmentSuccess(false); // Set appointment success flag
+        Config::setAppointmentError(true); // Set appointment error flag
+    }
+}
+
+/**
  * Sets the target path to the index page.
  *
  * @var string $targetPath The path to the index page.

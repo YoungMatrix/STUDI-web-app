@@ -5,6 +5,9 @@
 // Namespace declaration
 namespace UserModel;
 
+// DateTime importation
+use DateTime;
+
 /**
  * Define the path to the autoload file.
  * 
@@ -175,6 +178,51 @@ class UserModel
         } else {
             // Log error if recaptcha token is not valid
             error_log('Recaptcha token not valid.');
+        }
+    }
+
+    /**
+     * Add an appointment based on sanitized input fields.
+     */
+    public static function addAppointment()
+    {
+        // Sanitize input fields
+        $safePattern = htmlspecialchars($_POST['pattern'], ENT_QUOTES, 'UTF-8');
+        $safeField = htmlspecialchars($_POST['field'], ENT_QUOTES, 'UTF-8');
+        $safeDoctor = htmlspecialchars($_POST['doctor'], ENT_QUOTES, 'UTF-8');
+
+        // Format dates and validate
+        $today = new DateTime(); // Get current date and time
+        $formattedentranceDate = DateTime::createFromFormat('Y-m-d', $_POST['entranceDate']); // Format entrance date
+        $formattedreleaseDate = DateTime::createFromFormat('Y-m-d', $_POST['releaseDate']); // Format release date
+        $safeentranceDate = htmlspecialchars($_POST['entranceDate'], ENT_QUOTES, 'UTF-8'); // Sanitize entrance date
+        $safereleaseDate = htmlspecialchars($_POST['releaseDate'], ENT_QUOTES, 'UTF-8'); // Sanitize release date
+
+        // Save history if dates are valid
+        if ($formattedentranceDate < $formattedreleaseDate && $today < $formattedentranceDate) {
+            // Get logged-in person
+            $person = Config::getPerson();
+
+            // Save history to database
+            $savedHistory = HistoryFunction::saveHistory(Config::getDatabase(), $person, $safePattern, $safeField, $safeDoctor, $safeentranceDate, $safereleaseDate);
+
+            // Update session variables
+            Config::setSavedHistory($savedHistory);
+
+            if ($savedHistory) {
+                // Retrieve updated history records
+                $historyRecords = HistoryFunction::retrieveHistory(Config::getDatabase(), $person->getEmail());
+                $person->setExtendedInformation($historyRecords);
+
+                // Update session variables
+                Config::setPerson($person);
+            } else {
+                // Log error if history saving fails
+                error_log("Failed to save history in the database.");
+            }
+        } else {
+            // Log error if dates are not valid
+            error_log('Entrance and release dates are not valid.');
         }
     }
 }

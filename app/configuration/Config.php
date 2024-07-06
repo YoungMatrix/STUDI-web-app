@@ -72,6 +72,11 @@ class Config
     private static $doctorMap;
 
     /**
+     * @var array|null $savedHistory Saved history data, retrieved from the session.
+     */
+    private static $savedHistory;
+
+    /**
      * @var array $doctorRecords Doctor records retrieved from the session.
      */
     private static $doctorRecords;
@@ -80,16 +85,6 @@ class Config
      * @var array $planningRecords Planning records retrieved from the session.
      */
     private static $planningRecords;
-
-    /**
-     * @var bool $signupError Flag indicating whether there is an error during signup.
-     */
-    private static $signupError;
-
-    /**
-     * @var bool $loginError Flag indicating whether there is an error during login.
-     */
-    private static $loginError;
 
     /**
      * @var bool $newDoctorSuccess Flag indicating the success of adding a new doctor.
@@ -110,6 +105,16 @@ class Config
      * @var bool $changePlanningError Flag indicating an error while changing planning.
      */
     private static $changePlanningError;
+
+    /**
+     * @var bool $signupError Flag indicating whether there is an error during signup.
+     */
+    private static $signupError;
+
+    /**
+     * @var bool $loginError Flag indicating whether there is an error during login.
+     */
+    private static $loginError;
 
     /**
      * @var bool $appointmentSuccess Flag indicating whether there is an appointment success.
@@ -138,18 +143,18 @@ class Config
             session_start();
         }
 
-        // Set the root path based on the document root of the server.
+        // Set the root path based on the document root of the server
         self::$rootPath = $_SERVER['DOCUMENT_ROOT'];
 
-        // Define the path for the maintenance view file.
+        // Define the path for the maintenance view file
         self::$maintenanceViewPath = self::$rootPath . '/app/view/maintenance/MaintenanceView.php';
 
         try {
-            // Load environment variables.
+            // Load environment variables
             $dotenv = Dotenv::createImmutable(self::$rootPath . '/app');
             $dotenv->load();
 
-            // Retrieve database connection details from environment variables.
+            // Retrieve database connection details from environment variables
             $dbHost = $_ENV['DB_HOST'];
             $dbRoot = $_ENV['DB_ROOT'];
             $dbName = $_ENV['DB_NAME'];
@@ -159,41 +164,48 @@ class Config
             self::$publicReCaptchaKey = $_ENV['PUBLIC_RECAPTCHA_KEY'];
             self::$secretReCaptchaKey = $_ENV['SECRET_RECAPTCHA_KEY'];
 
-            // Retrieve the maintenance mode status from environment variables.
+            // Retrieve the maintenance mode status from environment variables
             $maintenanceModeEnabled = strtolower($_ENV['MAINTENANCE_MODE']) === 'true';
         } catch (\Exception $e) {
-            // Log the error message and enable maintenance mode.
+            // Log the error message and enable maintenance mode
             error_log('Error during load environment variables: ' . $e->getMessage());
             FileFunction::maintenanceFile(self::$maintenanceViewPath);
             exit;
         }
 
-        // Retrieve the logged-in person's instance from the session, if available.
+        // Retrieve the logged-in person's instance from the session, if available
         if (isset($_SESSION['person'])) {
             self::$person = unserialize($_SESSION['person']);
         } else {
             self::$person = null;
         }
 
-        // Retrieve pattern list from the session, if available.
+        // Retrieve pattern list from the session, if available
         if (isset($_SESSION['pattern'])) {
             self::$patternList = $_SESSION['pattern'];
         } else {
             self::$patternList = null;
         }
 
-        // Retrieve field list from the session, if available.
+        // Retrieve field list from the session, if available
         if (isset($_SESSION['field'])) {
             self::$fieldList = $_SESSION['field'];
         } else {
             self::$fieldList = null;
         }
 
-        // Retrieve doctor map from the session, if available.
+        // Retrieve doctor map from the session, if available
         if (isset($_SESSION['doctorMap'])) {
             self::$doctorMap = $_SESSION['doctorMap'];
         } else {
             self::$doctorMap = null;
+        }
+
+        // Retrieve saved history from session, if available
+        if (isset($_SESSION['savedHistory'])) {
+            self::$savedHistory = $_SESSION['savedHistory'];
+        } else {
+            self::$savedHistory = null;
         }
 
         // Retrieve doctor records from session if available, otherwise initialize as empty array
@@ -210,49 +222,63 @@ class Config
             self::$planningRecords = [];
         }
 
-        // Retrieve signup error from session, if available.
-        if (isset($_SESSION['signupError'])) {
-            self::$signupError = $_SESSION['signupError'];
-        } else {
-            self::$signupError = false;
-        }
-
-        // Retrieve login error from session, if available.
-        if (isset($_SESSION['loginError'])) {
-            self::$loginError = $_SESSION['loginError'];
-        } else {
-            self::$loginError = false;
-        }
-
-        // Retrieve new doctor success flag from session, if available.
+        // Retrieve new doctor success flag from session, if available
         if (isset($_SESSION['newDoctorSuccess'])) {
             self::$newDoctorSuccess = $_SESSION['newDoctorSuccess'];
         } else {
             self::$newDoctorSuccess = false;
         }
 
-        // Retrieve new doctor error flag from session, if available.
+        // Retrieve new doctor error flag from session, if available
         if (isset($_SESSION['newDoctorError'])) {
             self::$newDoctorError = $_SESSION['newDoctorError'];
         } else {
             self::$newDoctorError = false;
         }
 
-        // Retrieve change planning success flag from session, if available.
+        // Retrieve change planning success flag from session, if available
         if (isset($_SESSION['changePlanningSuccess'])) {
             self::$changePlanningSuccess = $_SESSION['changePlanningSuccess'];
         } else {
             self::$changePlanningSuccess = false;
         }
 
-        // Retrieve change planning error flag from session, if available.
+        // Retrieve change planning error flag from session, if available
         if (isset($_SESSION['changePlanningError'])) {
             self::$changePlanningError = $_SESSION['changePlanningError'];
         } else {
             self::$changePlanningError = false;
         }
 
-        // Handle maintenance mode or initialize the database.
+        // Retrieve signup error from session, if available
+        if (isset($_SESSION['signupError'])) {
+            self::$signupError = $_SESSION['signupError'];
+        } else {
+            self::$signupError = false;
+        }
+
+        // Retrieve login error from session, if available
+        if (isset($_SESSION['loginError'])) {
+            self::$loginError = $_SESSION['loginError'];
+        } else {
+            self::$loginError = false;
+        }
+
+        // Retrieve appointment success status from session, if available
+        if (isset($_SESSION['appointmentSuccess'])) {
+            self::$appointmentSuccess = $_SESSION['appointmentSuccess'];
+        } else {
+            self::$appointmentSuccess = false;
+        }
+
+        // Retrieve appointment error status from session, if available
+        if (isset($_SESSION['appointmentError'])) {
+            self::$appointmentError = $_SESSION['appointmentError'];
+        } else {
+            self::$appointmentError = false;
+        }
+
+        // Handle maintenance mode or initialize the database
         self::handleMaintenance($maintenanceModeEnabled);
         self::initializeDatabase($dbHost, $dbName, $dbRoot, $dbPassword, $dbPort);
     }
@@ -265,7 +291,7 @@ class Config
      */
     private static function handleMaintenance($maintenanceModeEnabled)
     {
-        // If maintenance mode is enabled, display the maintenance view and exit.
+        // If maintenance mode is enabled, display the maintenance view and exit
         if ($maintenanceModeEnabled) {
             FileFunction::maintenanceFile(self::$maintenanceViewPath);
             exit;
@@ -285,12 +311,12 @@ class Config
     private static function initializeDatabase($dbHost, $dbName, $dbRoot, $dbPassword, $dbPort)
     {
         try {
-            // Get the database instance and disconnect to check the connection.
+            // Get the database instance and disconnect to check the connection
             $database = Database::getInstance($dbHost, $dbName, $dbRoot, $dbPassword, $dbPort);
             self::$database = $database;
             $database->disconnect();
         } catch (PDOException $e) {
-            // Log the error message and enable maintenance mode.
+            // Log the error message and enable maintenance mode
             error_log('Connection failed to the Database: ' . $e->getMessage());
             FileFunction::maintenanceFile(self::$maintenanceViewPath);
             exit;
@@ -385,6 +411,16 @@ class Config
     public static function getDoctorMap()
     {
         return self::$doctorMap;
+    }
+
+    /**
+     * Get the saved history data from the session.
+     *
+     * @return array|null Saved history data retrieved from the session, or null if not set.
+     */
+    public static function getSavedHistory()
+    {
+        return self::$savedHistory;
     }
 
     /**
@@ -542,6 +578,17 @@ class Config
     }
 
     /**
+     * Set the saved history in the session.
+     *
+     * @param array $savedHistory The saved history to store in session.
+     */
+    public static function setSavedHistory($savedHistory)
+    {
+        $_SESSION['savedHistory'] = $savedHistory;
+        self::$savedHistory = $savedHistory;
+    }
+
+    /**
      * Set the signup error in the session.
      *
      * @param bool $signupError The signup error to store in session.
@@ -561,5 +608,27 @@ class Config
     {
         $_SESSION['loginError'] = $loginError;
         self::$loginError = $loginError;
+    }
+
+    /**
+     * Set the appointment success status in the session.
+     *
+     * @param bool $appointmentSuccess The appointment success status to store in session.
+     */
+    public static function setAppointmentSuccess($appointmentSuccess)
+    {
+        $_SESSION['appointmentSuccess'] = $appointmentSuccess;
+        self::$appointmentSuccess = $appointmentSuccess;
+    }
+
+    /**
+     * Set the appointment error status in the session.
+     *
+     * @param bool $appointmentError The appointment error status to store in session.
+     */
+    public static function setAppointmentError($appointmentError)
+    {
+        $_SESSION['appointmentError'] = $appointmentError;
+        self::$appointmentError = $appointmentError;
     }
 }

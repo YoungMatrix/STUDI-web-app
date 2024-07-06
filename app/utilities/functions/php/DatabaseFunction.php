@@ -353,6 +353,54 @@ class DatabaseFunction
     }
 
     /**
+     * Retrieves history ID by patient ID and dates.
+     *
+     * @param Database $database The database instance.
+     * @param int $patientId The ID of the patient.
+     * @param string $entranceDate The entrance date in 'Y-m-d' format.
+     * @param string $releaseDate The release date in 'Y-m-d' format.
+     * @return int|null The ID of the history record, or null if not found or on error.
+     */
+    public static function getHistoryIdByPatientIdAndDate($database, $patientId, $entranceDate, $releaseDate)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_history_id_by_patient_id_and_date.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Prepare the parameters for the query.
+            $params = [
+                ':patientId' => $patientId,
+                ':entranceDate' => $entranceDate,
+                ':releaseDate' => $releaseDate
+            ];
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params);
+
+            // Check if a result is found.
+            if ($result !== false && !empty($result)) {
+                // Return the ID of the history record found.
+                return (int)$result[0]['id_history'];
+            } else {
+                // Return null if no history record is found.
+                return null;
+            }
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in getHistoryIdByPatientIdAndDate function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
      * Retrieves patient count by email.
      *
      * This function retrieves the count of patients with the given email from the database.
@@ -399,6 +447,57 @@ class DatabaseFunction
     }
 
     /**
+     * Retrieves the count of history records by patient ID and dates.
+     *
+     * @param Database $database The database instance.
+     * @param int $patientId The ID of the patient.
+     * @param string $entranceDate The entrance date in 'Y-m-d' format.
+     * @param string $releaseDate The release date in 'Y-m-d' format.
+     * @return bool|null Returns true if no history records exist for the patient and dates, false if records exist, or null on error.
+     */
+    public static function getHistoryCountByPatientIdAndDate($database, $patientId, $entranceDate, $releaseDate)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_history_count_by_patient_id_and_date.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Prepare the parameters for the query.
+            $params = [
+                ':patientId' => $patientId,
+                ':entranceDate' => $entranceDate,
+                ':releaseDate' => $releaseDate
+            ];
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params);
+
+            // Check if a result is found.
+            if ($result !== false and !empty($result)) {
+                // Check the count of history records returned.
+                if ((int)$result[0]['COUNT(*)'] > 0) {
+                    return false; // Records exist for the patient and dates
+                } else {
+                    return true; // No records exist for the patient and dates
+                }
+            } else {
+                return false; // Error occurred or no result found
+            }
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in getHistoryCountByPatientIdAndDate function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
      * Inserts a new patient into the database.
      *
      * This function inserts a new patient record into the database using a prepared SQL query.
@@ -434,6 +533,72 @@ class DatabaseFunction
     }
 
     /**
+     * Inserts a new history record into the database.
+     *
+     * @param Database $database The database instance.
+     * @param array $params The parameters for the SQL query.
+     * @return bool Returns true on success, false on failure.
+     */
+    public static function insertNewHistory($database, $params)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/insert_new_history.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params, false);
+
+            // Return result.
+            return $result;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in insertNewHistory function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
+     * Inserts a new planning record into the database.
+     *
+     * @param Database $database The database instance.
+     * @param array $params The parameters for the SQL query.
+     * @return bool Returns true on success, false on failure.
+     */
+    public static function insertNewPlanning($database, $params)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/insert_new_planning.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params, false);
+
+            // Return result.
+            return $result;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in insertNewPlanning function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
      * Retrieves the SQL query to alter the patient table.
      *
      * This function retrieves the SQL query from a file to alter the patient table.
@@ -456,6 +621,64 @@ class DatabaseFunction
         } catch (\Exception $e) {
             // Log the exception message.
             error_log('Error in alterPatientTableQuery function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves the SQL query to alter the history table.
+     *
+     * This function retrieves the SQL query from a file to alter the history table.
+     *
+     * @return string|null Returns the SQL query if successful, otherwise returns null.
+     */
+    public static function alterHistoryTableQuery()
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/alter_history_table.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Return the SQL query.
+            return $query;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in alterHistoryTableQuery function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the ALTER SQL query for planning table from a SQL file.
+     *
+     * @return string|null SQL query for altering planning table, or null on error.
+     */
+    public static function alterPlanningTableQuery()
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/alter_planning_table.sql';
+
+            // Read the SQL query from the file.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+            $query = file_get_contents($sqlFilePath);
+
+            // Return the SQL query.
+            return $query;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in alterPlanningTableQuery function: ' . $e->getMessage());
 
             // Return null if an exception is caught.
             return null;
