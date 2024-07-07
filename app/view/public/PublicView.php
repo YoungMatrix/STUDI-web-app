@@ -14,13 +14,6 @@ require_once $autoload;
 use Configuration\Config;
 
 /**
- * Holds the path to the user controller file.
- *
- * @var string $targetPath Path to the UserController.php file.
- */
-$targetPath = '/app/controller/user/UserController.php';
-
-/**
  * Define the welcome message.
  *
  * This message is displayed to welcome users when they access the application.
@@ -38,7 +31,7 @@ $welcome = '<h1>Bienvenue</h1>';
  */
 $signup = '<section class="signup">
                 <a id=signupJS>S\'inscrire</a>
-                <form class="signupForm" id=signupBoxJS action=' . $targetPath . ' method="post">
+                <form class="signupForm" id=signupBoxJS action=/app/controller/user/UserController.php method="post">
                     <div class="form-group">
                         <label for="visitorLastName">Nom:</label>
                         <input type="text" name="visitorLastName" id=visitorLastNameJS required>
@@ -83,7 +76,7 @@ $signup = '<section class="signup">
  */
 $login = '<section class="login">
                 <a id=loginJS>Se connecter</a>
-                <form class="loginForm" id=loginBoxJS action=' . $targetPath . ' method="post">
+                <form class="loginForm" id=loginBoxJS action=/app/controller/user/UserController.php method="post">
                     <div class="form-group">
                         <label for="userEmail">E-mail:</label>
                         <input type="email" name="userEmail" id=userEmailJS required>

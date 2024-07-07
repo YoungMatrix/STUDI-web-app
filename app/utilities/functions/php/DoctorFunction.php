@@ -13,6 +13,7 @@ require_once $autoload;
 
 // Use statements to include necessary classes.
 use Classes\Doctor;
+use PHPFunctions\PasswordFunction;
 
 /**
  * Class DoctorFunction
@@ -21,6 +22,114 @@ use Classes\Doctor;
  */
 class DoctorFunction
 {
+    /**
+     * Create a new doctor and insert their information into the database.
+     *
+     * This function performs the following steps:
+     * - Alters the doctor table structure if necessary.
+     * - Converts and formats the doctor's last and first names.
+     * - Generates a unique email and hashed password.
+     * - Inserts the new doctor into the database.
+     * - Creates and returns a Doctor object on success, or null on failure.
+     *
+     * @param Database $database The Database instance.
+     * @param string $lastName The last name of the doctor.
+     * @param string $firstName The first name of the doctor.
+     * @param string $field The field of specialization of the doctor.
+     * @param string $hashedSalt The hashed salt for password hashing.
+     * @param string $hashedPepper The hashed pepper for password hashing.
+     * @return Doctor|null The newly created Doctor object or null if creation fails.
+     */
+    public static function createDoctor($database, $lastName, $firstName, $field, $hashedSalt, $hashedPepper)
+    {
+        try {
+            // Alter doctor table structure if necessary
+            $alterQuery = DatabaseFunction::alterDoctorTableQuery();
+            if ($alterQuery) {
+                $database->executeQuery($alterQuery);
+            }
+
+            // Convert last name to uppercase
+            $upperLastName = mb_strtoupper($lastName, 'UTF-8');
+
+            // Convert last name to lowercase
+            $lowerLastName = mb_strtolower($lastName, 'UTF-8');
+
+            // Convert first name to lowercase and capitalize the first letter
+            $firstName = ucfirst(mb_strtolower($firstName, 'UTF-8'));
+
+            // Begin transaction
+            if (!$database->beginTransaction()) {
+                error_log("Error in createDoctor function: Failed to start transaction.");
+                return null;
+            }
+
+            // Query to get the last doctor ID
+            $lastMatricule = DatabaseFunction::getMaxDoctorId($database);
+
+            // If no doctor ID found, rollback transaction and return null
+            if (!$lastMatricule) {
+                $database->rollback();
+                error_log("Error in createDoctor function: Last doctor ID not found.");
+                return null;
+            }
+
+            // Increment matricule for new doctor
+            $matricule = $lastMatricule + 1;
+
+            // Create a secret identifier and email for the doctor
+            $secret = $lowerLastName . '.' . $matricule;
+            $email = str_replace(' ', '', substr($lowerLastName, 0, 1) . '.' . $secret . '@soignemoi.com');
+
+            // Hash the password
+            $hashedPassword = PasswordFunction::hashPassword($secret, $hashedSalt, $hashedPepper);
+
+            // Get doctor role ID and field ID from the database
+            $doctorRoleId = DatabaseFunction::getValueFromTable($database, 'id_role', 'role', 'name_role', 'docteur');
+            $fieldId = DatabaseFunction::getValueFromTable($database, 'id_field', 'field', 'name_field', $field);
+
+            // If role ID or field ID not found, rollback transaction and return null
+            if (!$doctorRoleId || !$fieldId) {
+                $database->rollback();
+                error_log("Error in createDoctor function: Role ID or field ID not found.");
+                return null;
+            }
+
+            // Prepare and bind parameters for inserting the new doctor
+            $params = [
+                ':roleId' => $doctorRoleId,
+                ':fieldId' => $fieldId,
+                ':lastName' => $upperLastName,
+                ':firstName' => $firstName,
+                ':email' => $email,
+                ':password' => $hashedPassword,
+                ':salt' => $hashedSalt
+            ];
+
+            // Insert new doctor into the database
+            $resultInsert = DatabaseFunction::insertNewDoctor($database, $params);
+
+            // Retrieve the new doctor ID
+            $newDoctorId = DatabaseFunction::getNewDoctorId($database, $params);
+
+            if ($resultInsert && $newDoctorId) {
+                // Commit transaction and create the Doctor object with all the information
+                $database->commit();
+                return new Doctor($upperLastName, $firstName, $email, $newDoctorId, $field);
+            } else {
+                // Rollback transaction and log error if insertion fails
+                $database->rollback();
+                error_log("Error in createDoctor function: Failed to insert new doctor or retrieve new doctor ID.");
+                return null;
+            }
+        } catch (\PDOException $e) {
+            // Log PDO exceptions and rollback transaction
+            $database->rollback();
+            error_log('PDOException in createDoctor function: ' . $e->getMessage());
+            return null;
+        }
+    }
+
     /**
      * Retrieve doctor records from the database.
      *
@@ -68,8 +177,8 @@ class DoctorFunction
             // Log any exceptions that occur during data retrieval
             error_log('Error in retrieveDoctor function: ' . $e->getMessage());
 
-            // Return null if an exception occurs
-            return null;
+            // Return empty list if an exception occurs
+            return [];
         }
     }
 }

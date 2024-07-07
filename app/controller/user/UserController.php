@@ -2,9 +2,6 @@
 
 // File verified
 
-// Namespace declaration
-namespace UserController;
-
 /**
  * Define the path to the autoload file.
  * 
@@ -21,6 +18,18 @@ use PHPFunctions\FileFunction;
 // Initialize the configuration.
 Config::init();
 
+// Resetting the login error flag to false.
+Config::setLoginError(false);
+
+// Resetting the signup error flag to false.
+Config::setSignupError(false);
+
+// Resetting the appointment success flag to false.
+Config::setAppointmentSuccess(false);
+
+// Resetting the appointment error flag to false.
+Config::setAppointmentError(false);
+
 /**
  * Handles user signup.
  *
@@ -29,13 +38,9 @@ Config::init();
 if (isset($_POST['visitorLastName'], $_POST['visitorFirstName'], $_POST['visitorAddress'], $_POST['visitorEmail'], $_POST['visitorPassword'], $_POST['g-recaptcha-response-signup'])) {
     UserModel::processSignup(); // Process the signup attempt
 
-    Config::setLoginError(false); // Clear login error flag
-
     // Check if user creation was successful
     if (Config::getPerson() === null) {
         Config::setSignupError(true); // Set signup error flag
-    } else {
-        Config::setSignupError(false); // Clear signup error flag
     }
 }
 
@@ -47,13 +52,9 @@ if (isset($_POST['visitorLastName'], $_POST['visitorFirstName'], $_POST['visitor
 if (isset($_POST['userEmail'], $_POST['userPassword'], $_POST['g-recaptcha-response-login'])) {
     UserModel::processLogin(); // Process the login attempt
 
-    Config::setSignupError(false); // Clear signup error flag
-
     // Check if login was successful
     if (Config::getPerson() === null) {
         Config::setLoginError(true); // Set login error flag
-    } else {
-        Config::setLoginError(false); // Clear login error flag
     }
 }
 
@@ -71,9 +72,7 @@ if (isset($_POST['pattern'], $_POST['field'], $_POST['doctor'], $_POST['entrance
     // Check if saved history exists
     if (Config::getSavedHistory() !== null) {
         Config::setAppointmentSuccess(true); // Set appointment success flag
-        Config::setAppointmentError(false); // Set appointment error flag
     } else {
-        Config::setAppointmentSuccess(false); // Set appointment success flag
         Config::setAppointmentError(true); // Set appointment error flag
     }
 }

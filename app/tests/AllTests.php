@@ -12,6 +12,7 @@ require_once $autoload;
 
 // Use statements to include necessary classes.
 use Dotenv\Dotenv;
+use Test\AdminModelTest;
 use Test\DatabaseTest;
 use Test\UserModelTest;
 
@@ -38,8 +39,11 @@ try {
     // Call the function to perform database operations testing
     DatabaseTest::testDatabaseOperations($dbHost, $dbRoot, $dbName, $dbPassword, $dbPort);
 
-    // Call UserModelTest to run all tests related to user models
+    // Call UserModelTest to run all tests related to user model
     UserModelTest::runAllTests();
+
+    // Call AdminModelTest to run all tests related to admin model
+    AdminModelTest::runAllTests();
 
     echo "---------------------------";
 } catch (Exception $e) {

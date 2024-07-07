@@ -40,6 +40,12 @@ class UserFunction
     public static function createPatient($database, $lastName, $firstName, $address, $email, $hashedPassword, $hashedSalt)
     {
         try {
+            // Alter patient table structure if necessary
+            $alterQuery = DatabaseFunction::alterPatientTableQuery();
+            if ($alterQuery) {
+                $database->executeQuery($alterQuery);
+            }
+
             // Convert last name to uppercase
             $upperLastName = mb_strtoupper($lastName, 'UTF-8');
 
@@ -90,13 +96,10 @@ class UserFunction
                 // Insert new patient record
                 $resultInsert = DatabaseFunction::insertNewPatient($database, $params);
 
-                // Assuming the `alterPatientTableQuery` function needs to be called after insert
-                $alterQuery = DatabaseFunction::alterPatientTableQuery();
-
-                // Check if insertion and alter query were successful
-                if ($resultInsert && $alterQuery) {
+                // Check if insertion query was successful
+                if ($resultInsert) {
                     // Commit transaction if both operations were successful
-                    $database->commit($alterQuery);
+                    $database->commit();
                     // Return a new Patient object upon successful creation
                     $patient = new Patient($upperLastName, $firstName, $lowerEmail, $lowerAddress);
                     return $patient;

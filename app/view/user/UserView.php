@@ -14,13 +14,6 @@ require_once $autoload;
 use Configuration\Config;
 
 /**
- * Holds the path to the user controller file.
- *
- * @var string $targetPath Path to the UserController.php file.
- */
-$targetPath = '/app/controller/user/UserController.php';
-
-/**
  * Start output buffering and include the public view file.
  * 
  * @require $_SERVER['DOCUMENT_ROOT'] . '/app/view/public/PublicView.php';
@@ -105,7 +98,6 @@ $welcomeUser = '<h1>Bienvenue ' . Config::getPerson()->getLastName() . '</h1>
  * Generate the appointment form content.
  *
  * @var string $appointmentContent The HTML markup for the appointment form.
- * @var string $targetPath The target path for form submission.
  * @var string $pattern The individual pattern name.
  * @var string $field The individual field name.
  */
@@ -113,7 +105,7 @@ $appointmentContent =
     '<a id=appointmentJS>Organiser mon séjour</a>
             <section class="appointmentForm" id=appointmentBoxJS>
                 <h3>Veuillez remplir le formulaire suivant:</h3>
-                <form id=appointmentFormJS action=' . $targetPath . ' method="post">
+                <form id=appointmentFormJS action=/app/controller/user/UserController.php method="post">
                     <div class="form-group">
                         <label for="entranceDate">Date d\'entrée:</label>
                         <input type="date" name="entranceDate" id=entranceDateJS min=' . date('Y-m-d', strtotime('+1 day')) . ' required>

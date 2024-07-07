@@ -12,7 +12,8 @@
             "Test\\": "app/tests/",
             "Classes\\": "app/utilities/classes/",
             "PHPFunctions\\": "app/utilities/functions/php/",
-            "UserModel\\": "app/model/user/"
+            "UserModel\\": "app/model/user/",
+            "AdminModel\\": "app/model/admin/"
         }
     },
     "extra": {

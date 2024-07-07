@@ -62,8 +62,7 @@ class UserModel
         $successRecaptchaToken = RecaptchaFunction::verifyRecaptchaToken($safeRecaptchaToken, Config::getSecretReCaptchaKey());
 
         // Generate salt for password hashing
-        $salt = PasswordFunction::generateHashedSalt();
-        $hashedSalt = hash('sha256', $salt);
+        $hashedSalt = PasswordFunction::generateHashedSalt();
 
         // Retrieve hashed pepper from configuration
         $hashedPepper = PasswordFunction::retrieveHashedPepper();

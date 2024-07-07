@@ -14,13 +14,6 @@ require_once $autoload;
 use Configuration\Config;
 
 /**
- * Holds the path to the admin controller file.
- *
- * @var string $targetPath Path to the AdminController.php file.
- */
-$targetPath = '/app/controller/admin/AdminController.php';
-
-/**
  * Start output buffering and include the public view file.
  * 
  * @require $_SERVER['DOCUMENT_ROOT'] . '/app/view/public/PublicView.php';
@@ -168,7 +161,6 @@ $welcomeAdmin = '<h1>Bienvenue ADMIN</h1>
  * 2. Form for modifying doctor planning if both doctor records and planning records are available.
  *
  * @var string $formContent The generated HTML markup for the forms.
- * @var string $targetPath The target path for form submission.
  * @var string $field The field variable description.
  * @var Planning $planning The Planning object for doctor planning details.
  * @var Doctor $doctor The Doctor object for doctor details.
@@ -177,7 +169,7 @@ $formContent =
     '<a id=newDoctorJS>Ajouter un nouveau docteur</a>
             <section class="newDoctorForm" id=newDoctorBoxJS>
                 <h3>Veuillez remplir le formulaire suivant:</h3>
-                <form id=newDoctorFormJS action=' . $targetPath . ' method="post">
+                <form id=newDoctorFormJS action=/app/controller/admin/AdminController.php method="post">
                     <div class="form-group">
                         <label for="newDoctorLastName">Nom du docteur:</label>
                         <input type="text" name="newDoctorLastName" id=newDoctorLastNameJS required>
@@ -206,7 +198,7 @@ if (!empty($doctorRecords) && !empty($planningRecords)) {
     $formContent .= '<a id=doctorPlanningJS>Modifier le planning des docteurs</a>
             <section class="doctorPlanningForm" id=doctorPlanningBoxJS>
                 <h3>Veuillez remplir le formulaire suivant:</h3>
-                <form id=doctorPlanningFormJS action=' . $targetPath . ' method="post">
+                <form id=doctorPlanningFormJS action=/app/controller/admin/AdminController.php method="post">
                     <div class="form-group">
                         <label for="planningId">Planning:</label>
                         <select name="planningId" id=planningIdJS required>

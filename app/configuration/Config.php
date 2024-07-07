@@ -72,6 +72,11 @@ class Config
     private static $doctorMap;
 
     /**
+     * @var Doctor|null $doctor Instance of the created doctor, retrieved from the session.
+     */
+    private static $doctor;
+
+    /**
      * @var array|null $savedHistory Saved history data, retrieved from the session.
      */
     private static $savedHistory;
@@ -199,6 +204,13 @@ class Config
             self::$doctorMap = $_SESSION['doctorMap'];
         } else {
             self::$doctorMap = null;
+        }
+
+        // Retrieve the created doctor instance from the session, if available
+        if (isset($_SESSION['doctor'])) {
+            self::$doctor = unserialize($_SESSION['doctor']);
+        } else {
+            self::$doctor = null;
         }
 
         // Retrieve saved history from session, if available
@@ -414,6 +426,16 @@ class Config
     }
 
     /**
+     * Get the instance of the created doctor.
+     *
+     * @return Doctor|null Instance of the created doctor.
+     */
+    public static function getDoctor()
+    {
+        return self::$doctor;
+    }
+
+    /**
      * Get the saved history data from the session.
      *
      * @return array|null Saved history data retrieved from the session, or null if not set.
@@ -578,6 +600,17 @@ class Config
     }
 
     /**
+     * Set the created doctor instance in the session.
+     *
+     * @param mixed $doctor The doctor object to store in session.
+     */
+    public static function setDoctor($doctor)
+    {
+        $_SESSION['doctor'] = serialize($doctor);
+        self::$doctor = $doctor;
+    }
+
+    /**
      * Set the saved history in the session.
      *
      * @param array $savedHistory The saved history to store in session.
@@ -634,6 +667,50 @@ class Config
     {
         $_SESSION['loginError'] = $loginError;
         self::$loginError = $loginError;
+    }
+
+    /**
+     * Set the new doctor success flag in the session and class property.
+     *
+     * @param bool $newDoctorSuccess The success flag to store in session.
+     */
+    public static function setNewDoctorSuccess($newDoctorSuccess)
+    {
+        $_SESSION['newDoctorSuccess'] = $newDoctorSuccess;
+        self::$newDoctorSuccess = $newDoctorSuccess;
+    }
+
+    /**
+     * Set the new doctor error flag in the session and class property.
+     *
+     * @param bool $newDoctorError The error flag to store in session.
+     */
+    public static function setNewDoctorError($newDoctorError)
+    {
+        $_SESSION['newDoctorError'] = $newDoctorError;
+        self::$newDoctorError = $newDoctorError;
+    }
+
+    /**
+     * Set the change planning success flag in the session and class property.
+     *
+     * @param bool $changePlanningSuccess The success flag to store in session.
+     */
+    public static function setChangePlanningSuccess($changePlanningSuccess)
+    {
+        $_SESSION['changePlanningSuccess'] = $changePlanningSuccess;
+        self::$changePlanningSuccess = $changePlanningSuccess;
+    }
+
+    /**
+     * Set the change planning error flag in the session and class property.
+     *
+     * @param bool $changePlanningError The error flag to store in session.
+     */
+    public static function setChangePlanningError($changePlanningError)
+    {
+        $_SESSION['changePlanningError'] = $changePlanningError;
+        self::$changePlanningError = $changePlanningError;
     }
 
     /**

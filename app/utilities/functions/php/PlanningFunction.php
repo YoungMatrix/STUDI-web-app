@@ -146,8 +146,8 @@ class PlanningFunction
             // Log any exceptions that occur during data retrieval
             error_log('Error in retrievePlanning function: ' . $e->getMessage());
 
-            // Return null if an exception occurs
-            return null;
+            // Return empty list if an exception occurs
+            return [];
         }
     }
 }

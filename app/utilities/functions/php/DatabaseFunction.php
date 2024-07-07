@@ -353,6 +353,49 @@ class DatabaseFunction
     }
 
     /**
+     * Get the ID of a new doctor using provided parameters.
+     *
+     * This function retrieves the maximum ID of a doctor from the 'doctor' table based on the provided details.
+     *
+     * @param Database $database The Database instance.
+     * @param array $params The parameters for the SQL query.
+     * @return int|false The doctor ID, or false if not found or an error occurs.
+     */
+    public static function getNewDoctorId($database, $params)
+    {
+        try {
+            // Path to the SQL file containing the query.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_new_doctor_id_by_its_details.sql';
+
+            // Check if the SQL file exists.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+
+            // Read the SQL query from the file.
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params);
+
+            // Check if a result is found.
+            if ($result !== false && !empty($result)) {
+                // Return the doctor ID.
+                return (int) $result[0]['id_doctor'];
+            } else {
+                // Return false if no result found.
+                return false;
+            }
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in getNewDoctorId function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
      * Retrieves history ID by patient ID and dates.
      *
      * @param Database $database The database instance.
@@ -584,6 +627,49 @@ class DatabaseFunction
     }
 
     /**
+     * Retrieve the maximum doctor ID from the database.
+     *
+     * This function retrieves the maximum doctor ID from the database.
+     *
+     * @param Database $database The Database instance used for querying.
+     *
+     * @return int|false The maximum doctor ID if found, or false if no records found or an error occurred.
+     */
+    public static function getMaxDoctorId($database)
+    {
+        try {
+            // Path to the SQL file containing the query.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/get_max_doctor_id.sql';
+
+            // Check if the SQL file exists.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+
+            // Read the SQL query from the file.
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQuery method of the Database instance.
+            $result = $database->executeQuery($query);
+
+            // Check if a result is found.
+            if ($result !== false && !empty($result)) {
+                // Return the maximum doctor ID.
+                return (int) $result[0]['MAX(id_doctor)'];
+            } else {
+                // Return false if no result found.
+                return false;
+            }
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in getMaxDoctorId function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
      * Inserts a new patient into the database.
      *
      * This function inserts a new patient record into the database using a prepared SQL query.
@@ -685,6 +771,41 @@ class DatabaseFunction
     }
 
     /**
+     * Inserts a new doctor record into the database.
+     *
+     * @param Database $database The Database instance.
+     * @param array $params The parameters for the SQL query.
+     * @return bool Returns true on success, false on failure.
+     */
+    public static function insertNewDoctor($database, $params)
+    {
+        try {
+            // Path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/insert_new_doctor.sql';
+
+            // Check if the SQL file exists.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+
+            // Read the SQL query from the file.
+            $query = file_get_contents($sqlFilePath);
+
+            // Execute the query using the executeQueryParam method of the Database instance.
+            $result = $database->executeQueryParam($query, $params, false);
+
+            // Return result.
+            return $result;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in insertNewDoctor function: ' . $e->getMessage());
+
+            // Return false if an exception is caught.
+            return false;
+        }
+    }
+
+    /**
      * Retrieves the SQL query to alter the patient table.
      *
      * This function retrieves the SQL query from a file to alter the patient table.
@@ -765,6 +886,36 @@ class DatabaseFunction
         } catch (\Exception $e) {
             // Log the exception message to error_log.
             error_log('Error in alterPlanningTableQuery function: ' . $e->getMessage());
+
+            // Return null if an exception is caught.
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the ALTER SQL query for the doctor table from a SQL file.
+     *
+     * @return string|null The SQL query for altering the doctor table, or null on error.
+     */
+    public static function alterDoctorTableQuery()
+    {
+        try {
+            // Define the path to the SQL file.
+            $sqlFilePath = Config::getRootPath() . '/app/assets/sql/alter_doctor_table.sql';
+
+            // Check if the SQL file exists.
+            if (!file_exists($sqlFilePath)) {
+                throw new \Exception("SQL file not found: $sqlFilePath");
+            }
+
+            // Read the SQL query from the file.
+            $query = file_get_contents($sqlFilePath);
+
+            // Return the SQL query.
+            return $query;
+        } catch (\Exception $e) {
+            // Log the exception message to error_log.
+            error_log('Error in alterDoctorTableQuery function: ' . $e->getMessage());
 
             // Return null if an exception is caught.
             return null;
