@@ -17,6 +17,7 @@ require_once $autoload;
 use Configuration\Config;
 use PHPFunctions\DoctorFunction;
 use PHPFunctions\PasswordFunction;
+use PHPFunctions\PlanningFunction;
 use PHPFunctions\VerificationFunction;
 
 // Initialize the configuration.
@@ -65,6 +66,31 @@ class AdminModel
         } else {
             // Log an error if last name or first name are not valid
             error_log('Variables (name and firstname) not valid.');
+        }
+    }
+
+    /**
+     * Method to change the planning for a doctor.
+     *
+     * This method sanitizes the input data, changes the planning using 
+     * PlanningFunction, and updates the session with the new planning records.
+     */
+    public static function changePlanning()
+    {
+        // Sanitize input data to prevent XSS attacks
+        $safePlanningId = htmlspecialchars($_POST['planningId'], ENT_QUOTES, 'UTF-8');
+        $safeOtherDoctorId = htmlspecialchars($_POST['otherDoctorId'], ENT_QUOTES, 'UTF-8');
+
+        // Change the planning using the sanitized input data
+        $planningChanged = PlanningFunction::changePlanning(Config::getDatabase(), $safePlanningId, $safeOtherDoctorId);
+
+        // Check if the planning change was successful
+        if ($planningChanged) {
+            // Retrieve and store the updated list of planning records in the session
+            Config::setPlanningRecords(PlanningFunction::retrievePlanning(Config::getDatabase()));
+        } else {
+            // Log an error message if the planning change failed
+            error_log('Planning could not be changed.');
         }
     }
 }

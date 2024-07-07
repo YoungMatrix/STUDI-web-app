@@ -27,6 +27,91 @@ use DateInterval;
 class PlanningFunction
 {
     /**
+     * Change the doctor assigned to a specific planning entry.
+     *
+     * @param Database $database The Database instance.
+     * @param int $planningId The ID of the planning entry.
+     * @param string $otherDoctorId The ID of the new doctor.
+     * @return bool True if the doctor is successfully changed, false otherwise.
+     */
+    public static function changePlanning($database, $planningId, $otherDoctorId)
+    {
+        try {
+            // Check and alter the planning table structure if necessary
+            $alterQuery = DatabaseFunction::alterPlanningTableQuery();
+            if ($alterQuery) {
+                $database->executeQuery($alterQuery);
+            }
+
+            // Begin transaction
+            if (!$database->beginTransaction()) {
+                error_log("Failed to start transaction in changePlanning function.");
+                return false;
+            }
+
+            // Retrieve current planning details
+            $result = DatabaseFunction::getDateDoctorFieldIdByPlanningId($database, $planningId);
+
+            if (!$result) {
+                $database->rollback();
+                error_log("Error: Last doctor ID not found in changePlanning function.");
+                return false; // Return false if query fails or no result
+            }
+
+            // Extract current planning details
+            $currentPlanningDate = $result[0]['date_planning'];
+            $currentDoctorId = $result[0]['id_confirmed_doctor'];
+            $currentDoctorField = $result[0]['id_field'];
+
+            // Retrieve the field ID for the new doctor
+            $otherDoctorField = DatabaseFunction::getFieldIdByDoctorId($database, $otherDoctorId);
+
+            if (!$otherDoctorField) {
+                $database->rollback();
+                error_log("Error: New doctor ID not found in changePlanning function.");
+                return false; // Return false if query fails or no result
+            }
+
+            // Check if the new doctor is the same as the current one or if they belong to different fields
+            if ($currentDoctorId == $otherDoctorId || $currentDoctorField != $otherDoctorField) {
+                $database->rollback();
+                error_log("Error: New doctor ID is the same as the current one or belongs to a different field in changePlanning function.");
+                return false; // Return false if the new doctor is the same as the current one or if they belong to different fields
+            }
+
+            // Check the count of planning records for the new doctor and date
+            $count = DatabaseFunction::getPlanningCountByDateAndDoctorId($database, $currentPlanningDate, $otherDoctorId);
+
+            if ($count === false || $count >= 5) {
+                $database->rollback();
+                error_log("Error: Planning count validation failed in changePlanning function.");
+                return false; // Return false if query fails or no result
+            }
+
+            // Prepare update parameters and execute the update query
+            $params = [
+                ':newConfirmedDoctorId' => $otherDoctorId,
+                ':planningId' => $planningId
+            ];
+            $success = DatabaseFunction::updatePlanning($database, $params);
+
+            // Commit transaction if update was successful, rollback otherwise
+            if ($success !== false) {
+                $database->commit();
+                return true; // Return true if the update was successful
+            } else {
+                $database->rollback();
+                error_log("Error: Update planning query failed in changePlanning function.");
+                return false; // Return false if the update query fails
+            }
+        } catch (\PDOException $e) {
+            // Log database exception message
+            error_log('Database error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Update planning table with history records.
      *
      * This function updates the planning table with the specified history ID and dates

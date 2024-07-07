@@ -55,9 +55,22 @@ if (isset($_POST['newDoctorLastName'], $_POST['newDoctorFirstName'], $_POST['fie
  * it will execute the necessary logic to change the planning accordingly.
  */
 if (isset($_POST['planningId'], $_POST['otherDoctorId'])) {
-    // To be defined
-}
+    // Retrieve the current planning records before making changes
+    $oldPlanningRecords = Config::getPlanningRecords();
 
+    // Execute the change planning logic
+    AdminModel::changePlanning();
+
+    // Retrieve the new planning records after making changes
+    $newPlanningRecords = Config::getPlanningRecords();
+
+    // Check if the planning change was successful by comparing old and new records
+    if ($oldPlanningRecords != $newPlanningRecords) {
+        Config::setChangePlanningSuccess(true); // Set the success flag if the planning records have changed
+    } else {
+        Config::setChangePlanningError(true); // Set the error flag if the planning records have not changed
+    }
+}
 
 /**
  * Sets the target path to the index page.
