@@ -1,0 +1,11 @@
+# File verified
+
+# Exclude specific directories
+db
+design
+save
+.vscode
+
+# Exclude specific files
+.gitignore
+README.md 

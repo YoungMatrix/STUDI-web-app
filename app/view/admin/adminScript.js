@@ -10,7 +10,7 @@ import * as adminFunction from '../../utilities/functions/js/adminFunction.js';
  * Path to the public controller file.
  * @constant {string} publicControllerPath - The path to the public controller PHP file.
  */
-const publicControllerPath = '../../controller/public/publicController.php';
+const publicControllerPath = '../../controller/public/PublicController.php';
 
 /**
  * Elements related to planning.

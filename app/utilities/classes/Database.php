@@ -152,7 +152,12 @@ class Database
             $statement = $this->getConnection()->query($query);
 
             // Fetch all rows from the result set as associative arrays
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            // Close the cursor
+            $statement->closeCursor();
+
+            return $results;
         } catch (PDOException $e) {
             // Log the error message if query execution fails
             error_log('Query failed: ' . $e->getMessage());
@@ -181,8 +186,13 @@ class Database
 
             if ($fetchResult) {
                 // Fetch results for SELECT queries
-                return $statement->fetchAll(PDO::FETCH_ASSOC);
+                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+                // Close the cursor after fetching results
+                $statement->closeCursor();
+                return $results;
             } else {
+                // Close the cursor for non-SELECT queries
+                $statement->closeCursor();
                 // Return true for INSERT success, false otherwise
                 return $success;
             }

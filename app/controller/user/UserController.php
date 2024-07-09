@@ -82,7 +82,7 @@ if (isset($_POST['pattern'], $_POST['field'], $_POST['doctor'], $_POST['entrance
  *
  * @var string $targetPath The path to the index page.
  */
-$targetPath = Config::getRootPath() . '/app/index.php';
+$targetPath = Config::getRootPath() . '/index.php';
 
 // Check if the index page file exists. If not, display the maintenance view.
 FileFunction::fileExists($targetPath, Config::getMaintenanceViewPath());
