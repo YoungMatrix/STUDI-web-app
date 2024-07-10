@@ -1,0 +1,55 @@
+# STUDI Web Application
+
+## Requirements
+- **VS Studio Code** version >= 1.91.0
+  - PHP Server Extension version >= 3.0.2
+  - Composer Extension version >= 1.49.15728
+- **XAMPP** Version >= 8.2.12 with Control Panel version >= 3.3.0
+
+## Steps to Prepare the Application for Windows
+
+### Clone Repository
+1. Open VS Studio Code.
+2. In the terminal:
+   ```bash
+   git clone https://github.com/YoungMatrix/STUDI-web-app
+3. Login to GIT if necessary.
+
+### Setup Environment
+4. In VS Studio Code, open the directory directly in STUDI-web-app.
+5. Create .env file in /app directory with the following content:
+    # File verified
+
+    # Maintenance mode enabled (true or false)
+    MAINTENANCE_MODE=false
+
+    # Database connection parameters (online or local database)
+    DB_HOST=to be completed
+    DB_ROOT=tbc
+    DB_NAME=tbc
+    DB_PASSWORD=tbc
+    DB_PORT=tbc
+
+    # Pepper used for hashing passwords
+    PEPPER=Studi
+
+    # Public reCAPTCHA key
+    PUBLIC_RECAPTCHA_KEY=tbc
+
+    # Secret reCAPTCHA key
+    SECRET_RECAPTCHA_KEY=tbc
+
+Note: Obtain reCAPTCHA keys by creating a reCAPTCHA on Google in V2 invisible mode.
+6. Create /vendor directory in STUDI-web-app:
+- Open composer.json.
+- Run composer install in the terminal.
+
+### Database Setup
+7. Start Apache and MySQL from XAMPP Control Panel.
+8. Open MySQL as admin.
+9. In phpMyAdmin, create a new database named ecf_studi_verified.
+10. Import the file ecf_studi_verified.sql from STUDI-web-app/db directory into the newly created database.
+
+### Steps to Launch the Application for Windows
+11. Go to index.php file in STUDI-web-app.
+12. Right-click and select "PHP SERVER: reload server" to launch the application.
