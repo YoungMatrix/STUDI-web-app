@@ -40,6 +40,7 @@
     SECRET_RECAPTCHA_KEY=tbc
 
 Note: Obtain reCAPTCHA keys by creating a reCAPTCHA on Google in V2 invisible mode.
+
 6. Create /vendor directory in STUDI-web-app:
 - Open composer.json.
 - Run composer install in the terminal.
