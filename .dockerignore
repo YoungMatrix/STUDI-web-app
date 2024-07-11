@@ -3,6 +3,7 @@
 # Exclude specific directories
 db
 design
+docs
 save
 .vscode
 
