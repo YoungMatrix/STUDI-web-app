@@ -4,7 +4,10 @@
 - **VS Studio Code** version >= 1.91.0
   - PHP Server Extension version >= 3.0.2
   - Composer Extension version >= 1.49.15728
+  - vscode-pdf version >= 1.2.2
 - **XAMPP** Version >= 8.2.12 with Control Panel version >= 3.3.0
+- **Git** Version >= 2.45.2
+- **Public and Private keys** reCAPTCHA on Google in V2 invisible mode.
 
 ## Steps to Prepare the Application for Windows
 
@@ -24,20 +27,24 @@
     MAINTENANCE_MODE=false
 
     # Database connection parameters (online or local database)
-    DB_HOST=to be completed
-    DB_ROOT=tbc
-    DB_NAME=tbc
-    DB_PASSWORD=tbc
-    DB_PORT=tbc
+    DB_HOST=To Be Completed
+
+    DB_ROOT=TBC
+
+    DB_NAME=TBC
+
+    DB_PASSWORD=TBC
+
+    DB_PORT=TBC
 
     # Pepper used for hashing passwords
     PEPPER=Studi
 
     # Public reCAPTCHA key
-    PUBLIC_RECAPTCHA_KEY=tbc
+    PUBLIC_RECAPTCHA_KEY=TBC
 
     # Secret reCAPTCHA key
-    SECRET_RECAPTCHA_KEY=tbc
+    SECRET_RECAPTCHA_KEY=TBC
 
 Note: Obtain reCAPTCHA keys by creating a reCAPTCHA on Google in V2 invisible mode.
 
