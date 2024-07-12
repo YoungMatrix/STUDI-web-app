@@ -5,6 +5,7 @@
   - PHP Server Extension version >= 3.0.2
   - Composer Extension version >= 1.49.15728
   - Docker Extension version >= 1.29.1
+  - GitHub Actions Extension version >= 0.26.3
   - vscode-pdf Extension version >= 1.2.2
 - **XAMPP** version >= 8.2.12 with Control Panel version >= 3.3.0
 - **Git** version >= 2.45.2
