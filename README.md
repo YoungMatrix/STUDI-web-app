@@ -5,8 +5,9 @@
   - PHP Server Extension version >= 3.0.2
   - Composer Extension version >= 1.49.15728
   - vscode-pdf version >= 1.2.2
-- **XAMPP** Version >= 8.2.12 with Control Panel version >= 3.3.0
-- **Git** Version >= 2.45.2
+- **XAMPP** version >= 8.2.12 with Control Panel version >= 3.3.0
+- **Git** version >= 2.45.2
+- **Database connection parameters** (online or local database).
 - **Public and Private keys** reCAPTCHA on Google in V2 invisible mode.
 
 ## Steps to Prepare the Application for Windows
