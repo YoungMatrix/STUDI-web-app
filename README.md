@@ -1,7 +1,7 @@
 # STUDI Web Application
 
 ## Requirements
-- **VS Studio Code** version >= 1.91.0
+- **Visual Studio Code** version >= 1.91.0
   - PHP Server Extension version >= 3.0.2
   - Composer Extension version >= 1.49.15728
   - Docker Extension version >= 1.29.1
@@ -17,14 +17,14 @@
 ## Steps to Prepare the Application for Windows
 
 ### Clone Repository
-1. Open VS Studio Code.
+1. Open Visual Studio Code.
 2. In the terminal:
    ```bash
    git clone https://github.com/YoungMatrix/STUDI-web-app
 3. Login to GIT if necessary.
 
 ### Setup Environment
-4. In VS Studio Code, open the directory directly in STUDI-web-app.
+4. In Visual Studio Code, open the directory directly in STUDI-web-app.
 5. Create .env file in /app directory with the following content:
     # File verified
 
